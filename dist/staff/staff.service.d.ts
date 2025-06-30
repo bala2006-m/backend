@@ -6,11 +6,11 @@ export declare class StaffService {
     private prisma;
     constructor(prisma: PrismaService);
     findByUsername(username: string): Promise<{
-        id: number;
         designation: string;
         name: string;
         mobile: string;
         gender: import(".prisma/client").$Enums.Gender;
+        school_id: number;
     } | null>;
     register(dto: RegisterStaffDto): Promise<{
         status: string;
@@ -26,12 +26,12 @@ export declare class StaffService {
             email: string;
             mobile: string;
             gender: import(".prisma/client").$Enums.Gender;
-            school_id: string;
+            school_id: number;
             password: string;
         };
         message?: undefined;
     }>;
-    getAllBySchool(school_id: string): Promise<{
+    getAllBySchool(school_id: number): Promise<{
         status: string;
         count: number;
         staff: {
@@ -57,7 +57,7 @@ export declare class StaffService {
             email: string;
             mobile: string;
             gender: import(".prisma/client").$Enums.Gender;
-            school_id: string;
+            school_id: number;
             password: string;
         };
         message?: undefined;

@@ -39,7 +39,7 @@ __decorate([
     __param(0, (0, common_1.Query)('school_id')),
     __param(1, (0, common_1.Query)('date')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [Number, String]),
     __metadata("design:returntype", Promise)
 ], DashboardController.prototype, "getSummary", null);
 __decorate([
@@ -47,7 +47,7 @@ __decorate([
     __param(0, (0, common_1.Query)('school_id')),
     __param(1, (0, common_1.Query)('date')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [Number, String]),
     __metadata("design:returntype", Promise)
 ], DashboardController.prototype, "getClassSummary", null);
 exports.DashboardController = DashboardController = __decorate([

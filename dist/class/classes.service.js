@@ -29,6 +29,21 @@ let ClassesService = class ClassesService {
             },
         });
     }
+    async fetchClassData(schoolId) {
+        return this.prisma.classes.findMany({
+            where: {
+                school_id: schoolId,
+            },
+            select: {
+                id: true,
+                class: true,
+                section: true,
+            },
+            orderBy: {
+                class: 'asc',
+            },
+        });
+    }
 };
 exports.ClassesService = ClassesService;
 exports.ClassesService = ClassesService = __decorate([

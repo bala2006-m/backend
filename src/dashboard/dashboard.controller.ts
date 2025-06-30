@@ -7,7 +7,7 @@ export class DashboardController {
 
   @Get('summary')
   async getSummary(
-    @Query('school_id') schoolId: string,
+    @Query('school_id') schoolId: number,
     @Query('date') date: string,
   ) {
     if (!schoolId || !date) {
@@ -18,7 +18,7 @@ export class DashboardController {
   }
   @Get('class-summary')
   async getClassSummary(
-    @Query('school_id') schoolId: string,
+    @Query('school_id') schoolId: number,
     @Query('date') date: string,
   ) {
     if (!schoolId || !date) {

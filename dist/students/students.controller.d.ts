@@ -7,13 +7,13 @@ export declare class StudentsController {
     getStudentByUsername(username: string): Promise<{
         status: string;
         student: {
-            school_id: number;
-            class_id: number;
             name: string;
-            email: string;
             gender: import(".prisma/client").$Enums.Gender;
+            email: string;
             mobile: string;
             photo: Uint8Array<ArrayBufferLike> | null;
+            class_id: number;
+            school_id: number;
         };
         message?: undefined;
     } | {
@@ -31,16 +31,16 @@ export declare class StudentsController {
     } | {
         status: string;
         student: {
-            school_id: number;
-            class_id: number;
-            username: string;
             id: number;
+            username: string;
             name: string;
-            email: string;
             gender: import(".prisma/client").$Enums.Gender;
+            email: string;
             mobile: string;
-            password: string;
             photo: Uint8Array | null;
+            class_id: number;
+            school_id: number;
+            password: string;
         };
         message?: undefined;
     }>;
@@ -56,11 +56,26 @@ export declare class StudentsController {
         status: string;
         count: number;
         students: {
-            username: string;
             id: number;
+            username: string;
             name: string;
-            email: string;
             gender: import(".prisma/client").$Enums.Gender;
+            email: string;
+            mobile: string;
+        }[];
+    } | {
+        status: string;
+        message: string;
+    }>;
+    getAllByClassAndSchool(classId: string, schoolId: string): Promise<{
+        status: string;
+        count: number;
+        students: {
+            id: number;
+            username: string;
+            name: string;
+            gender: import(".prisma/client").$Enums.Gender;
+            email: string;
             mobile: string;
         }[];
     } | {

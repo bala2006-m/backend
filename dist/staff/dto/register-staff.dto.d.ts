@@ -6,6 +6,6 @@ export declare class RegisterStaffDto {
     email: string;
     gender: Gender;
     mobile: string;
-    school_id: string;
+    school_id: number;
     password: string;
 }

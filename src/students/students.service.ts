@@ -118,5 +118,24 @@ async getAllByClass(class_id: string) {
     students,
   };
 }
+async getAllByClassAndSchool(class_id: string,school_id: string) {
+  const students = await this.prisma.student.findMany({
+    where: { class_id:Number(class_id) ,school_id:Number(school_id)},
+    select: {
+      id: true,
+      username: true,
+      name: true,
+      email: true,
+      mobile: true,
+      gender: true,
+    },
+    orderBy: { name: 'asc' },
+  });
 
+  return {
+    status: 'success',
+    count: students.length,
+    students,
+  };
+}
 }

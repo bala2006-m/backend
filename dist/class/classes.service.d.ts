@@ -6,4 +6,9 @@ export declare class ClassesService {
         class: string;
         section: string;
     } | null>;
+    fetchClassData(schoolId: number): Promise<{
+        class: string;
+        id: number;
+        section: string;
+    }[]>;
 }

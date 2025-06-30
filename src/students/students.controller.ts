@@ -45,4 +45,15 @@ export class StudentsController {
 
     return this.studentsService.getAllByClass(classId);
   }
+
+
+  @Get('fetch-student-data')
+    async getAllByClassAndSchool(@Query('class_id') classId: string, @Query('school_id') schoolId: string ) {
+      if (!classId||!schoolId) {
+        return { status: 'error', message: 'Missing class_id or school_id' };
+      }
+
+      return this.studentsService.getAllByClass(classId);
+    }
+
 }

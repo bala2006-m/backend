@@ -36,7 +36,7 @@ let StaffController = class StaffController {
                 return {
                     status: 'success',
                     staff: {
-                        id: staff.id,
+                        school_id: staff.school_id,
                         name: staff.name,
                         designation: staff.designation,
                         gender: staff.gender,
@@ -104,7 +104,7 @@ __decorate([
     (0, common_1.Get)('all-by-school'),
     __param(0, (0, common_1.Query)('school_id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], StaffController.prototype, "getAllBySchoolId", null);
 __decorate([

@@ -20,5 +20,5 @@ export class UpdateStaffDto {
 
   @IsOptional()
   @IsString()
-  school_id?: string;
+  school_id?: number;
 }

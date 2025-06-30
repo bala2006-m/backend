@@ -12,7 +12,7 @@ export declare class StaffController {
     } | {
         status: string;
         staff: {
-            id: number;
+            school_id: number;
             name: string;
             designation: string;
             gender: import(".prisma/client").$Enums.Gender;
@@ -38,12 +38,12 @@ export declare class StaffController {
             email: string;
             mobile: string;
             gender: import(".prisma/client").$Enums.Gender;
-            school_id: string;
+            school_id: number;
             password: string;
         };
         message?: undefined;
     }>;
-    getAllBySchoolId(schoolId: string): Promise<{
+    getAllBySchoolId(schoolId: number): Promise<{
         status: string;
         count: number;
         staff: {
@@ -68,7 +68,7 @@ export declare class StaffController {
             email: string;
             mobile: string;
             gender: import(".prisma/client").$Enums.Gender;
-            school_id: string;
+            school_id: number;
             password: string;
         };
         message?: undefined;

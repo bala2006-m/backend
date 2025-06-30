@@ -22,7 +22,7 @@ async getByUsername(@Query('username') username: string) {
       return {
         status: 'success',
         staff: {
-          id: staff.id,
+          school_id: staff.school_id,
           name: staff.name,
           designation: staff.designation,
           gender: staff.gender,
@@ -51,7 +51,7 @@ async getByUsername(@Query('username') username: string) {
     return this.staffService.register(dto);
   }
   @Get('all-by-school')
-    async getAllBySchoolId(@Query('school_id') schoolId: string) {
+    async getAllBySchoolId(@Query('school_id') schoolId: number) {
       if (!schoolId) {
         return { status: 'error', message: 'Missing school_id' };
       }

@@ -19,7 +19,7 @@ let DashboardService = class DashboardService {
     }
     async getSummary(school_id, date) {
         const d = new Date(date);
-        const totalStudents = await this.prisma.student.count({ where: { school_id: Number(school_id) }
+        const totalStudents = await this.prisma.student.count({ where: { school_id: school_id }
         });
         const studentAttendance = await this.prisma.student_attendance.groupBy({
             by: ['fn_status', 'an_status'],

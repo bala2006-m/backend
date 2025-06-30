@@ -52,6 +52,12 @@ let StudentsController = class StudentsController {
         }
         return this.studentsService.getAllByClass(classId);
     }
+    async getAllByClassAndSchool(classId, schoolId) {
+        if (!classId || !schoolId) {
+            return { status: 'error', message: 'Missing class_id or school_id' };
+        }
+        return this.studentsService.getAllByClass(classId);
+    }
 };
 exports.StudentsController = StudentsController;
 __decorate([
@@ -89,6 +95,14 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], StudentsController.prototype, "getAllByClass", null);
+__decorate([
+    (0, common_1.Get)('fetch-student-data'),
+    __param(0, (0, common_1.Query)('class_id')),
+    __param(1, (0, common_1.Query)('school_id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], StudentsController.prototype, "getAllByClassAndSchool", null);
 exports.StudentsController = StudentsController = __decorate([
     (0, common_1.Controller)('students'),
     __metadata("design:paramtypes", [students_service_1.StudentsService])

@@ -32,7 +32,7 @@ model staff {
   email     String
   mobile    String
   gender    Gender
-  school_id String
+  school_id Int
   password  String
 }
 model student_attendance {
@@ -41,7 +41,7 @@ model student_attendance {
   date       DateTime
   fn_status  String?
   an_status  String?
-  school_id  String
+  school_id  Int
   class_id   String
 
   @@unique([username, date])
@@ -52,13 +52,13 @@ model staff_attendance {
   date       DateTime
   fn_status  String?
   an_status  String?
-  school_id  String
+  school_id  Int
 
   @@unique([username, date])
 }
 model ClassTimetable {
   id           Int      @id @default(autoincrement())
-  schoolId     String
+  schoolId     Int
   classId      String
   dayOfWeek    DayOfWeek
   periodNumber Int

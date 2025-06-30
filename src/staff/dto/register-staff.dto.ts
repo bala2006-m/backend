@@ -28,7 +28,7 @@ export class RegisterStaffDto {
   mobile: string;
 
   @IsString()
-  school_id: string;
+  school_id: number;
 
   @IsString()
   @MinLength(6)

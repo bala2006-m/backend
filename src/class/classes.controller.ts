@@ -1,19 +1,19 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { ClassesService } from './classes.service';
 
-@Controller('fetch_class_datas')
+@Controller('class')
 export class ClassesController {
   constructor(private readonly classesService: ClassesService) {}
 
-  @Get()
-  async getClassInfo(
+  @Get('get_class_data')
+  async getClassData(
     @Query('school_id') schoolId: string,
     @Query('class_id') classId: string,
   ) {
     if (!schoolId || !classId) {
       return {
         status: 'error',
-        message: 'Missing required parameters: school_id and class_id',
+        message: 'school_id and class_id are required',
       };
     }
 
@@ -23,22 +23,41 @@ export class ClassesController {
         parseInt(classId, 10),
       );
 
-      if (!classData) {
-        return {
-          status: 'success',
-          classes: [],
-        };
-      }
+      return {
+        status: 'success',
+        class: classData,
+      };
+    } catch (error) {
+      return {
+        status: 'error',
+        message: 'Failed to fetch class data',
+        details: error.message,
+      };
+    }
+  }
+
+  // GET /class/fetch_class_data?school_id=1
+  @Get('fetch_class_data')
+  async fetchClassData(@Query('school_id') schoolId: string) {
+    if (!schoolId) {
+      return {
+        status: 'error',
+        message: 'school_id is required',
+      };
+    }
+
+    try {
+      const classes = await this.classesService.fetchClassData(parseInt(schoolId, 10));
 
       return {
         status: 'success',
-        classes: classData,
+        classes,
       };
     } catch (error) {
-      console.error('Error fetching class data:', error);
       return {
         status: 'error',
-        message: 'Internal server error',
+        message: 'Failed to fetch classes',
+        details: error.message,
       };
     }
   }

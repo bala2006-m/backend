@@ -4,5 +4,5 @@ export declare class UpdateStaffDto {
     email?: string;
     gender: Gender;
     mobile?: string;
-    school_id?: string;
+    school_id?: number;
 }

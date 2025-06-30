@@ -5,10 +5,10 @@ import { PrismaService } from '../common/prisma.service';
 export class DashboardService {
   constructor(private prisma: PrismaService) {}
 
-  async getSummary(school_id: string, date: string) {
+  async getSummary(school_id: number, date: string) {
     const d = new Date(date);
 
-    const totalStudents = await this.prisma.student.count({ where: { school_id: Number(school_id) }
+    const totalStudents = await this.prisma.student.count({ where: { school_id: school_id }
  });
 
     const studentAttendance = await this.prisma.student_attendance.groupBy({
@@ -53,7 +53,7 @@ export class DashboardService {
     };
   }
 
-  async getClassSummary(school_id: string, date: string) {
+  async getClassSummary(school_id: number, date: string) {
     const d = new Date(date);
 
     const classGroups = await this.prisma.student.groupBy({

@@ -2,9 +2,9 @@ import { DashboardService } from './dashboard.service';
 export declare class DashboardController {
     private readonly dashboardService;
     constructor(dashboardService: DashboardService);
-    getSummary(schoolId: string, date: string): Promise<{
+    getSummary(schoolId: number, date: string): Promise<{
         status: string;
-        school_id: string;
+        school_id: number;
         date: string;
         summary: {
             students: {
@@ -26,9 +26,9 @@ export declare class DashboardController {
         status: string;
         message: string;
     }>;
-    getClassSummary(schoolId: string, date: string): Promise<{
+    getClassSummary(schoolId: number, date: string): Promise<{
         status: string;
-        school_id: string;
+        school_id: number;
         date: string;
         summary: {
             class_id: string;

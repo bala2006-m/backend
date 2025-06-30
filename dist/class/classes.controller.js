@@ -20,46 +20,69 @@ let ClassesController = class ClassesController {
     constructor(classesService) {
         this.classesService = classesService;
     }
-    async getClassInfo(schoolId, classId) {
+    async getClassData(schoolId, classId) {
         if (!schoolId || !classId) {
             return {
                 status: 'error',
-                message: 'Missing required parameters: school_id and class_id',
+                message: 'school_id and class_id are required',
             };
         }
         try {
             const classData = await this.classesService.getClassData(parseInt(schoolId, 10), parseInt(classId, 10));
-            if (!classData) {
-                return {
-                    status: 'success',
-                    classes: [],
-                };
-            }
             return {
                 status: 'success',
-                classes: classData,
+                class: classData,
             };
         }
         catch (error) {
-            console.error('Error fetching class data:', error);
             return {
                 status: 'error',
-                message: 'Internal server error',
+                message: 'Failed to fetch class data',
+                details: error.message,
+            };
+        }
+    }
+    async fetchClassData(schoolId) {
+        if (!schoolId) {
+            return {
+                status: 'error',
+                message: 'school_id is required',
+            };
+        }
+        try {
+            const classes = await this.classesService.fetchClassData(parseInt(schoolId, 10));
+            return {
+                status: 'success',
+                classes,
+            };
+        }
+        catch (error) {
+            return {
+                status: 'error',
+                message: 'Failed to fetch classes',
+                details: error.message,
             };
         }
     }
 };
 exports.ClassesController = ClassesController;
 __decorate([
-    (0, common_1.Get)(),
+    (0, common_1.Get)('get_class_data'),
     __param(0, (0, common_1.Query)('school_id')),
     __param(1, (0, common_1.Query)('class_id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
-], ClassesController.prototype, "getClassInfo", null);
+], ClassesController.prototype, "getClassData", null);
+__decorate([
+    (0, common_1.Get)('fetch_class_data'),
+    __param(0, (0, common_1.Query)('school_id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ClassesController.prototype, "fetchClassData", null);
 exports.ClassesController = ClassesController = __decorate([
-    (0, common_1.Controller)('fetch_class_datas'),
+    (0, common_1.Controller)('class'),
     __metadata("design:paramtypes", [classes_service_1.ClassesService])
 ], ClassesController);
 //# sourceMappingURL=classes.controller.js.map

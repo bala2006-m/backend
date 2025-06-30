@@ -61,4 +61,16 @@ export declare class StudentsService {
             mobile: string;
         }[];
     }>;
+    getAllByClassAndSchool(class_id: string, school_id: string): Promise<{
+        status: string;
+        count: number;
+        students: {
+            username: string;
+            id: number;
+            name: string;
+            email: string;
+            gender: import(".prisma/client").$Enums.Gender;
+            mobile: string;
+        }[];
+    }>;
 }

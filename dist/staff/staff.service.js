@@ -23,7 +23,7 @@ let StaffService = class StaffService {
             return await this.prisma.staff.findUnique({
                 where: { username },
                 select: {
-                    id: true,
+                    school_id: true,
                     name: true,
                     designation: true,
                     gender: true,

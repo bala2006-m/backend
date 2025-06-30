@@ -12,7 +12,7 @@ async findByUsername(username: string) {
     return await this.prisma.staff.findUnique({
       where: { username },
       select: {
-        id: true,
+        school_id: true,
         name: true,
         designation: true,
         gender: true,
@@ -52,7 +52,7 @@ async findByUsername(username: string) {
 
     return { status: 'success', staff };
   }
-  async getAllBySchool(school_id: string) {
+  async getAllBySchool(school_id: number) {
     const staffList = await this.prisma.staff.findMany({
       where: { school_id },
       select: {
