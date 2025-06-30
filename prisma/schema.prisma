@@ -1,0 +1,105 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = "mysql://root:bala30012006@localhost:3306/school_attendance"
+}
+enum Gender {
+  M
+  F
+  O
+}
+
+model student {
+  id        Int     @id @default(autoincrement())
+  username  String  @unique
+  name      String
+  gender    Gender
+  email     String
+  mobile    String
+  photo     Bytes?
+  class_id  Int
+  school_id Int
+  password  String
+}
+model staff {
+  id        Int    @id @default(autoincrement())
+  username  String @unique
+  designation String
+  name      String
+  email     String
+  mobile    String
+  gender    Gender
+  school_id String
+  password  String
+}
+model student_attendance {
+  id         Int      @id @default(autoincrement())
+  username   String
+  date       DateTime
+  fn_status  String?
+  an_status  String?
+  school_id  String
+  class_id   String
+
+  @@unique([username, date])
+}
+model staff_attendance {
+  id         Int      @id @default(autoincrement())
+  username   String
+  date       DateTime
+  fn_status  String?
+  an_status  String?
+  school_id  String
+
+  @@unique([username, date])
+}
+model ClassTimetable {
+  id           Int      @id @default(autoincrement())
+  schoolId     String
+  classId      String
+  dayOfWeek    DayOfWeek
+  periodNumber Int
+  subject      String
+
+  @@unique([schoolId, classId, dayOfWeek, periodNumber])
+}
+
+enum DayOfWeek {
+  Mon
+  Tue
+  Wed
+  Thu
+  Fri
+  Sat
+}
+model Feedback {
+  id         Int      @id @default(autoincrement())
+  name       String
+  email      String
+  feedback   String
+  school_id  Int
+  class_id   Int
+  created_at DateTime @default(now())
+}
+model School {
+  id      Int       @id @default(autoincrement())
+  name    String
+  address String
+  photo   Bytes?    // Store image as binary (BLOB)
+
+  // Relations
+  classes Classes[] // 1 school → many classes
+}
+
+model Classes {
+  id        Int     @id @default(autoincrement())
+  class     String
+  section   String
+  school_id Int
+
+  // Relations
+  school    School  @relation(fields: [school_id], references: [id])
+}
