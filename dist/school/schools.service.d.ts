@@ -5,7 +5,7 @@ export declare class SchoolsService {
     findById(id: number): Promise<{
         id: number;
         name: string;
-        photo: Uint8Array<ArrayBufferLike> | null;
         address: string;
+        photo: Uint8Array<ArrayBufferLike>;
     } | null>;
 }

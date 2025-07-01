@@ -5,7 +5,10 @@ import { FetchStudentAttendanceDto } from './dto/fetch-student-attendance.dto';
 export declare class AttendanceController {
     private readonly attendanceService;
     constructor(attendanceService: AttendanceService);
-    markStudent(dto: CreateAttendanceDto): Promise<void>;
+    markStudent(dto: CreateAttendanceDto): Promise<{
+        status: string;
+        message: string;
+    }>;
     fetchStudentAttendance(query: FetchStudentAttendanceDto): Promise<{
         status: string;
         message: string;
@@ -34,8 +37,8 @@ export declare class AttendanceController {
         year: number;
         records: {
             date: Date;
-            fn_status: string | null;
-            an_status: string | null;
+            fn_status: string;
+            an_status: string;
         }[];
     } | {
         status: string;
@@ -46,8 +49,11 @@ export declare class AttendanceController {
         date: string;
         username: string;
         record: {
-            fn_status: string | null;
-            an_status: string | null;
+            fn_status: string;
+            an_status: string;
+        } | {
+            fn_status: null;
+            an_status: null;
         };
     } | {
         status: string;
@@ -62,8 +68,11 @@ export declare class AttendanceController {
         date: string;
         username: string;
         record: {
-            fn_status: string | null;
-            an_status: string | null;
+            fn_status: string;
+            an_status: string;
+        } | {
+            fn_status: null;
+            an_status: null;
         };
     } | {
         status: string;
@@ -76,8 +85,8 @@ export declare class AttendanceController {
         year: number;
         records: {
             date: Date;
-            fn_status: string | null;
-            an_status: string | null;
+            fn_status: string;
+            an_status: string;
         }[];
     }>;
 }

@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../common/prisma.service';
 import { RegisterStudentDto } from './dto/register-student.dto';
 import * as bcrypt from 'bcrypt';
+import { BadRequestException, Injectable } from '@nestjs/common';
+
 import { ChangePasswordDto } from './dto/change-password.dto';
 @Injectable()
 export class StudentsService {
@@ -74,31 +75,32 @@ export class StudentsService {
 
     return { status: 'success', message: `Student '${username}' deleted.` };
   }
-async changePassword(dto: ChangePasswordDto) {
-  const student = await this.prisma.student.findUnique({
-    where: { username: dto.username },
-  });
+async changeStudentPassword(dto: ChangePasswordDto) {
+    const { username, newPassword, confirmPassword } = dto;
 
-  if (!student) {
-    return { status: 'error', message: 'Student not found' };
+    if (newPassword !== confirmPassword) {
+      throw new BadRequestException('Passwords do not match');
+    }
+
+    const user = await this.prisma.attendance_user.findUnique({
+      where: { username },
+    });
+
+    if (!user || user.role !== 'student') {
+      throw new BadRequestException('Student not found or invalid role');
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await this.prisma.attendance_user.update({
+      where: { username },
+      data: { password: hashedPassword },
+    });
+
+    return { status: 'success', message: 'Password updated successfully' };
   }
 
-  const valid = await bcrypt.compare(dto.old_password, student.password);
-
-  if (!valid) {
-    return { status: 'error', message: 'Incorrect old password' };
-  }
-
-  const hashed = await bcrypt.hash(dto.new_password, 10);
-
-  await this.prisma.student.update({
-    where: { username: dto.username },
-    data: { password: hashed },
-  });
-
-  return { status: 'success', message: 'Password changed successfully' };
-}
-async getAllByClass(class_id: string) {
+  async getAllByClass(class_id: string) {
   const students = await this.prisma.student.findMany({
     where: { class_id:Number(class_id) },
     select: {

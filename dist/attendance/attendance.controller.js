@@ -70,7 +70,7 @@ let AttendanceController = class AttendanceController {
 };
 exports.AttendanceController = AttendanceController;
 __decorate([
-    (0, common_1.Post)('student'),
+    (0, common_1.Post)('post_student_attendance'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_attendance_dto_1.CreateAttendanceDto]),

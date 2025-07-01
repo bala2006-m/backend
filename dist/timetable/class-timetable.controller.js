@@ -15,20 +15,33 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ClassTimetableController = void 0;
 const common_1 = require("@nestjs/common");
 const class_timetable_service_1 = require("./class-timetable.service");
+const timetable_dto_1 = require("./dto/timetable.dto");
 let ClassTimetableController = class ClassTimetableController {
     timetableService;
     constructor(timetableService) {
         this.timetableService = timetableService;
     }
-    async getTimetable(schoolId, classId) {
-        if (!schoolId || !classId) {
-            return { status: 'error', message: 'Missing schoolId or classId' };
+    async save(dto) {
+        return this.timetableService.saveTimetables(dto.data);
+    }
+    async getTimetable(schoolIdStr, classIdStr) {
+        const schoolId = parseInt(schoolIdStr);
+        const classId = parseInt(classIdStr);
+        if (isNaN(schoolId) || isNaN(classId)) {
+            return { status: 'error', message: 'Invalid schoolId or classId' };
         }
         const result = await this.timetableService.getTimetable(schoolId, classId);
         return { status: 'success', timetable: result };
     }
 };
 exports.ClassTimetableController = ClassTimetableController;
+__decorate([
+    (0, common_1.Post)(),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [timetable_dto_1.SaveTimetableDto]),
+    __metadata("design:returntype", Promise)
+], ClassTimetableController.prototype, "save", null);
 __decorate([
     (0, common_1.Get)(),
     __param(0, (0, common_1.Query)('schoolId')),

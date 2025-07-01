@@ -1,5 +1,5 @@
-import { IsEmail, IsOptional, IsString } from 'class-validator';
-import { Gender } from '@prisma/client';
+// src/staff/dto/update-staff.dto.ts
+import { IsOptional, IsString, IsEmail } from 'class-validator';
 
 export class UpdateStaffDto {
   @IsOptional()
@@ -12,13 +12,9 @@ export class UpdateStaffDto {
 
   @IsOptional()
   @IsString()
-  gender: Gender;
-
-  @IsOptional()
-  @IsString()
   mobile?: string;
 
   @IsOptional()
   @IsString()
-  school_id?: number;
+  designation?: string;
 }

@@ -17,14 +17,37 @@ let ClassTimetableService = class ClassTimetableService {
     constructor(prisma) {
         this.prisma = prisma;
     }
+    async saveTimetables(data) {
+        const lines = data
+            .split('\n')
+            .map((line) => line.trim())
+            .filter(Boolean);
+        const entries = lines.map((line) => {
+            const [school_id, class_id, dayOfWeek, periodNumberStr, ...subjectParts] = line.split(' ');
+            const periodNumber = parseInt(periodNumberStr, 10);
+            const subject = subjectParts.join(' ');
+            return {
+                school_id,
+                class_id,
+                dayOfWeek,
+                periodNumber,
+                subject,
+            };
+        });
+        await this.prisma.classTimetable.createMany({
+            data: entries,
+            skipDuplicates: true,
+        });
+        return { success: true, count: entries.length };
+    }
     async getTimetable(schoolId, classId) {
         const rows = await this.prisma.$queryRawUnsafe(`
-      SELECT day_of_week AS "dayOfWeek", period_number AS "periodNumber", subject
-      FROM timetables
+      SELECT dayOfWeek, periodNumber, subject
+      FROM ClassTimetable
       WHERE school_id = ? AND class_id = ?
       ORDER BY
-        FIELD(day_of_week, 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'),
-        period_number ASC
+        FIELD(dayOfWeek, 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'),
+        periodNumber ASC
     `, schoolId, classId);
         const grouped = {};
         for (const row of rows) {
@@ -38,6 +61,17 @@ let ClassTimetableService = class ClassTimetableService {
             });
         }
         return grouped;
+    }
+    async findByClass(school_id, class_id) {
+        return this.prisma.classTimetable.findMany({
+            where: {
+                school_id,
+                class_id,
+            },
+            orderBy: {
+                periodNumber: 'asc',
+            },
+        });
     }
 };
 exports.ClassTimetableService = ClassTimetableService;

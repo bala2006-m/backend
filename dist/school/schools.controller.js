@@ -21,11 +21,11 @@ let SchoolsController = class SchoolsController {
         this.schoolsService = schoolsService;
     }
     async getSchoolById(id) {
-        if (!id) {
-            return { status: 'error', message: 'Missing school ID' };
+        if (!id || isNaN(Number(id))) {
+            return { status: 'error', message: 'Invalid or missing school ID' };
         }
         try {
-            const school = await this.schoolsService.findById(parseInt(id, 10));
+            const school = await this.schoolsService.findById(Number(id));
             if (!school) {
                 return { status: 'error', message: 'School not found' };
             }

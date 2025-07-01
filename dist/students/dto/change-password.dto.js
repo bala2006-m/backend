@@ -13,26 +13,21 @@ exports.ChangePasswordDto = void 0;
 const class_validator_1 = require("class-validator");
 class ChangePasswordDto {
     username;
-    old_password;
-    new_password;
+    newPassword;
+    confirmPassword;
 }
 exports.ChangePasswordDto = ChangePasswordDto;
 __decorate([
-    (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], ChangePasswordDto.prototype, "username", void 0);
 __decorate([
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.MinLength)(6),
+    __metadata("design:type", String)
+], ChangePasswordDto.prototype, "newPassword", void 0);
+__decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
-], ChangePasswordDto.prototype, "old_password", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MinLength)(6),
-    (0, class_validator_1.Matches)(/^(?=.*[A-Za-z])(?=.*\d).+$/, {
-        message: 'New password must contain letters and numbers',
-    }),
-    __metadata("design:type", String)
-], ChangePasswordDto.prototype, "new_password", void 0);
+], ChangePasswordDto.prototype, "confirmPassword", void 0);
 //# sourceMappingURL=change-password.dto.js.map

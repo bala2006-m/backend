@@ -9,9 +9,9 @@ export declare class StudentsService {
         student: {
             school_id: number;
             class_id: number;
-            name: string;
+            name: string | null;
             email: string;
-            gender: import(".prisma/client").$Enums.Gender;
+            gender: import(".prisma/client").$Enums.Gender | null;
             mobile: string;
             photo: Uint8Array<ArrayBufferLike> | null;
         };
@@ -31,10 +31,10 @@ export declare class StudentsService {
             school_id: number;
             class_id: number;
             username: string;
+            name: string | null;
             id: number;
-            name: string;
             email: string;
-            gender: import(".prisma/client").$Enums.Gender;
+            gender: import(".prisma/client").$Enums.Gender | null;
             mobile: string;
             password: string;
             photo: Uint8Array | null;
@@ -45,7 +45,7 @@ export declare class StudentsService {
         status: string;
         message: string;
     }>;
-    changePassword(dto: ChangePasswordDto): Promise<{
+    changeStudentPassword(dto: ChangePasswordDto): Promise<{
         status: string;
         message: string;
     }>;
@@ -54,10 +54,10 @@ export declare class StudentsService {
         count: number;
         students: {
             username: string;
+            name: string | null;
             id: number;
-            name: string;
             email: string;
-            gender: import(".prisma/client").$Enums.Gender;
+            gender: import(".prisma/client").$Enums.Gender | null;
             mobile: string;
         }[];
     }>;
@@ -66,10 +66,10 @@ export declare class StudentsService {
         count: number;
         students: {
             username: string;
+            name: string | null;
             id: number;
-            name: string;
             email: string;
-            gender: import(".prisma/client").$Enums.Gender;
+            gender: import(".prisma/client").$Enums.Gender | null;
             mobile: string;
         }[];
     }>;

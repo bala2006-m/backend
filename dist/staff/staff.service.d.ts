@@ -5,11 +5,32 @@ import { UpdateStaffDto } from './dto/update-staff.dto';
 export declare class StaffService {
     private prisma;
     constructor(prisma: PrismaService);
+    updateProfile(username: string, data: UpdateStaffDto): Promise<{
+        id: number;
+        username: string;
+        designation: string;
+        name: string | null;
+        email: string;
+        gender: import(".prisma/client").$Enums.Gender | null;
+        mobile: string;
+        school_id: number;
+        password: string;
+    }>;
+    getProfileByUsername(username: string): Promise<{
+        id: number;
+        username: string;
+        designation: string;
+        name: string | null;
+        email: string;
+        gender: import(".prisma/client").$Enums.Gender | null;
+        mobile: string;
+        school_id: number;
+    } | null>;
     findByUsername(username: string): Promise<{
         designation: string;
-        name: string;
+        name: string | null;
+        gender: import(".prisma/client").$Enums.Gender | null;
         mobile: string;
-        gender: import(".prisma/client").$Enums.Gender;
         school_id: number;
     } | null>;
     register(dto: RegisterStaffDto): Promise<{
@@ -22,10 +43,10 @@ export declare class StaffService {
             id: number;
             username: string;
             designation: string;
-            name: string;
+            name: string | null;
             email: string;
+            gender: import(".prisma/client").$Enums.Gender | null;
             mobile: string;
-            gender: import(".prisma/client").$Enums.Gender;
             school_id: number;
             password: string;
         };
@@ -37,10 +58,10 @@ export declare class StaffService {
         staff: {
             id: number;
             username: string;
-            name: string;
+            name: string | null;
             email: string;
+            gender: import(".prisma/client").$Enums.Gender | null;
             mobile: string;
-            gender: import(".prisma/client").$Enums.Gender;
         }[];
     }>;
     updateStaff(username: string, dto: UpdateStaffDto): Promise<{
@@ -53,10 +74,10 @@ export declare class StaffService {
             id: number;
             username: string;
             designation: string;
-            name: string;
+            name: string | null;
             email: string;
+            gender: import(".prisma/client").$Enums.Gender | null;
             mobile: string;
-            gender: import(".prisma/client").$Enums.Gender;
             school_id: number;
             password: string;
         };

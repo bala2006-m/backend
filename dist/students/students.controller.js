@@ -44,7 +44,7 @@ let StudentsController = class StudentsController {
         return this.studentsService.deleteStudent(username);
     }
     async changePassword(dto) {
-        return this.studentsService.changePassword(dto);
+        return this.studentsService.changeStudentPassword(dto);
     }
     async getAllByClass(classId) {
         if (!classId) {
@@ -82,7 +82,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], StudentsController.prototype, "deleteStudent", null);
 __decorate([
-    (0, common_1.Put)('change-password'),
+    (0, common_1.Post)('change-password'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [change_password_dto_1.ChangePasswordDto]),

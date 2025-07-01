@@ -7,7 +7,7 @@ import { FetchStudentAttendanceDto } from './dto/fetch-student-attendance.dto';
 export class AttendanceController {
   constructor(private readonly attendanceService: AttendanceService) {}
 
-  @Post('student')
+  @Post('post_student_attendance')
   async markStudent(@Body() dto: CreateAttendanceDto) {
     return this.attendanceService.markStudentAttendance(dto);
   }

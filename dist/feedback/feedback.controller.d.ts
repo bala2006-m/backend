@@ -8,8 +8,8 @@ export declare class FeedbackController {
             feedback: string;
             school_id: number;
             class_id: number;
-            id: number;
             name: string;
+            id: number;
             email: string;
             created_at: Date;
         };

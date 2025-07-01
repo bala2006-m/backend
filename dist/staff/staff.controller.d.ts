@@ -5,6 +5,42 @@ import { ChangeStaffPasswordDto } from './dto/change-password.dto';
 export declare class StaffController {
     private readonly staffService;
     constructor(staffService: StaffService);
+    updateProfile(username: string, updateData: UpdateStaffDto): Promise<{
+        status: string;
+        data: {
+            id: number;
+            username: string;
+            designation: string;
+            name: string | null;
+            email: string;
+            gender: import(".prisma/client").$Enums.Gender | null;
+            mobile: string;
+            school_id: number;
+            password: string;
+        };
+    }>;
+    getProfileByUsername1(username: string): Promise<{
+        status: string;
+        message: string;
+        staff?: undefined;
+    } | {
+        status: string;
+        staff: {
+            id: number;
+            username: string;
+            email: string;
+            school_id: number;
+            name: string | null;
+            designation: string;
+            gender: import(".prisma/client").$Enums.Gender | null;
+            mobile: string;
+        };
+        message?: undefined;
+    } | {
+        status: string;
+        staff: null;
+        message: string;
+    }>;
     getByUsername(username: string): Promise<{
         status: string;
         message: string;
@@ -13,9 +49,9 @@ export declare class StaffController {
         status: string;
         staff: {
             school_id: number;
-            name: string;
+            name: string | null;
             designation: string;
-            gender: import(".prisma/client").$Enums.Gender;
+            gender: import(".prisma/client").$Enums.Gender | null;
             mobile: string;
         };
         message?: undefined;
@@ -34,10 +70,10 @@ export declare class StaffController {
             id: number;
             username: string;
             designation: string;
-            name: string;
+            name: string | null;
             email: string;
+            gender: import(".prisma/client").$Enums.Gender | null;
             mobile: string;
-            gender: import(".prisma/client").$Enums.Gender;
             school_id: number;
             password: string;
         };
@@ -49,10 +85,10 @@ export declare class StaffController {
         staff: {
             id: number;
             username: string;
-            name: string;
+            name: string | null;
             email: string;
+            gender: import(".prisma/client").$Enums.Gender | null;
             mobile: string;
-            gender: import(".prisma/client").$Enums.Gender;
         }[];
     } | {
         status: string;
@@ -64,10 +100,10 @@ export declare class StaffController {
             id: number;
             username: string;
             designation: string;
-            name: string;
+            name: string | null;
             email: string;
+            gender: import(".prisma/client").$Enums.Gender | null;
             mobile: string;
-            gender: import(".prisma/client").$Enums.Gender;
             school_id: number;
             password: string;
         };

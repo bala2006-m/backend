@@ -10,9 +10,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StudentsService = void 0;
-const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../common/prisma.service");
 const bcrypt = require("bcrypt");
+const common_1 = require("@nestjs/common");
 let StudentsService = class StudentsService {
     prisma;
     constructor(prisma) {
@@ -75,23 +75,23 @@ let StudentsService = class StudentsService {
         await this.prisma.student.delete({ where: { username } });
         return { status: 'success', message: `Student '${username}' deleted.` };
     }
-    async changePassword(dto) {
-        const student = await this.prisma.student.findUnique({
-            where: { username: dto.username },
-        });
-        if (!student) {
-            return { status: 'error', message: 'Student not found' };
+    async changeStudentPassword(dto) {
+        const { username, newPassword, confirmPassword } = dto;
+        if (newPassword !== confirmPassword) {
+            throw new common_1.BadRequestException('Passwords do not match');
         }
-        const valid = await bcrypt.compare(dto.old_password, student.password);
-        if (!valid) {
-            return { status: 'error', message: 'Incorrect old password' };
-        }
-        const hashed = await bcrypt.hash(dto.new_password, 10);
-        await this.prisma.student.update({
-            where: { username: dto.username },
-            data: { password: hashed },
+        const user = await this.prisma.attendance_user.findUnique({
+            where: { username },
         });
-        return { status: 'success', message: 'Password changed successfully' };
+        if (!user || user.role !== 'student') {
+            throw new common_1.BadRequestException('Student not found or invalid role');
+        }
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        await this.prisma.attendance_user.update({
+            where: { username },
+            data: { password: hashedPassword },
+        });
+        return { status: 'success', message: 'Password updated successfully' };
     }
     async getAllByClass(class_id) {
         const students = await this.prisma.student.findMany({

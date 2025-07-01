@@ -7,6 +7,10 @@ import {
 } from 'class-validator';
 import { Gender } from '@prisma/client';
 export class RegisterStaffDto {
+    @IsString()
+  @IsNotEmpty()
+  id: number;
+
   @IsString()
   @IsNotEmpty()
   username: string;

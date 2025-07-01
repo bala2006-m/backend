@@ -4,67 +4,13 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:bala30012006@localhost:3306/school_attendance"
+  url      = "mysql://root:bala30012006@localhost:3306/school_attendance1"
 }
+
 enum Gender {
   M
   F
   O
-}
-
-model student {
-  id        Int     @id @default(autoincrement())
-  username  String  @unique
-  name      String
-  gender    Gender
-  email     String
-  mobile    String
-  photo     Bytes?
-  class_id  Int
-  school_id Int
-  password  String
-}
-model staff {
-  id        Int    @id @default(autoincrement())
-  username  String @unique
-  designation String
-  name      String
-  email     String
-  mobile    String
-  gender    Gender
-  school_id Int
-  password  String
-}
-model student_attendance {
-  id         Int      @id @default(autoincrement())
-  username   String
-  date       DateTime
-  fn_status  String?
-  an_status  String?
-  school_id  Int
-  class_id   String
-
-  @@unique([username, date])
-}
-model staff_attendance {
-  id         Int      @id @default(autoincrement())
-  username   String
-  date       DateTime
-  fn_status  String?
-  an_status  String?
-  school_id  Int
-
-  @@unique([username, date])
-}
-model ClassTimetable {
-  id           Int      @id @default(autoincrement())
-  schoolId     Int
-  classId      String
-  dayOfWeek    DayOfWeek
-  periodNumber Int
-  subject      String
-
-  @@unique([schoolId, classId, dayOfWeek, periodNumber])
 }
 
 enum DayOfWeek {
@@ -75,6 +21,151 @@ enum DayOfWeek {
   Fri
   Sat
 }
+
+model Attendance_user {
+  id        Int    @id @default(autoincrement())
+  username  String @unique
+  password  String
+  role      String
+  school_id Int
+
+  school  School   @relation(fields: [school_id], references: [id])
+  staff   Staff?   @relation("UserToStaff") // No fields/references here
+  student Student?
+
+  @@index([school_id])
+}
+
+model School {
+  id      Int    @id @default(autoincrement())
+  name    String @unique
+  address String
+  photo   Bytes
+
+  users              Attendance_user[]
+  staff              Staff[]
+  classes            Classes[]
+  holidays           Holidays[]
+  students           Student[]
+  feedbacks          Feedback[]
+  classTimetables    ClassTimetable[]
+  staffAttendances   StaffAttendance[]
+  studentAttendances StudentAttendance[]
+}
+
+model Classes {
+  id        Int    @id @default(autoincrement())
+  class     String @map("class")
+  section   String
+  school_id Int
+
+  school            School              @relation(fields: [school_id], references: [id])
+  holidays          Holidays[]          @relation("HolidayClasses")
+  students          Student[]
+  studentAttendance StudentAttendance[]
+  classTimetables   ClassTimetable[]
+  feedbacks         Feedback[]
+
+  @@index([school_id])
+}
+
+model Holidays {
+  id        Int      @id @default(autoincrement())
+  date      DateTime
+  reason    String
+  school_id Int?
+  class_ids Json
+  fn        String?  @db.Char(1)
+  an        String   @db.Char(1)
+  school  School?   @relation(fields: [school_id], references: [id])
+  classes Classes[] @relation("HolidayClasses")
+
+  @@index([school_id])
+}
+
+model Staff {
+  id          Int               @id @default(autoincrement())
+  username    String            @unique
+  designation String
+  name        String?
+  email       String            @unique
+  gender      Gender?
+  mobile      String            @unique
+  school_id   Int
+  password    String
+  school      School            @relation(fields: [school_id], references: [id])
+  user        Attendance_user   @relation("UserToStaff", fields: [username], references: [username], onDelete: Cascade, onUpdate: Cascade)
+  attendances StaffAttendance[]
+
+  @@index([username])
+  @@index([school_id])
+}
+
+model StaffAttendance {
+  username  String
+  date      DateTime
+  fn_status String   @default("null")
+  an_status String   @default("null")
+  school_id Int?
+
+  school School? @relation(fields: [school_id], references: [id])
+  staff  Staff   @relation(fields: [username], references: [username])
+
+  @@unique([username, date])
+  @@index([school_id])
+}
+
+model Student {
+  id         Int                 @id @default(autoincrement())
+  username   String              @unique
+  name       String?
+  gender     Gender?
+  email      String              @unique
+  mobile     String              @unique
+  class_id   Int
+  school_id  Int
+  photo      Bytes?
+  password   String
+  class      Classes             @relation(fields: [class_id], references: [id])
+  school     School              @relation(fields: [school_id], references: [id])
+  user       Attendance_user     @relation(fields: [username], references: [username])
+  attendance StudentAttendance[]
+
+  @@index([username])
+  @@index([school_id])
+  @@index([class_id])
+}
+
+model StudentAttendance {
+  username  String
+  date      DateTime
+  fn_status String   @default("null")
+  an_status String   @default("null")
+  school_id Int
+  class_id  Int
+
+  class   Classes @relation(fields: [class_id], references: [id])
+  student Student @relation(fields: [username], references: [username])
+  school  School  @relation(fields: [school_id], references: [id])
+
+  @@unique([username, date], name: "username_date")
+  @@index([school_id])
+  @@index([class_id])
+}
+
+model ClassTimetable {
+  id           Int      @id @default(autoincrement())
+  school_id    String
+  class_id     String
+  dayOfWeek    String
+  periodNumber Int
+  subject      String
+  School       School?  @relation(fields: [schoolId], references: [id])
+  schoolId     Int?
+  Classes      Classes? @relation(fields: [classesId], references: [id])
+  classesId    Int?
+}
+
 model Feedback {
   id         Int      @id @default(autoincrement())
   name       String
@@ -83,23 +174,7 @@ model Feedback {
   school_id  Int
   class_id   Int
   created_at DateTime @default(now())
-}
-model School {
-  id      Int       @id @default(autoincrement())
-  name    String
-  address String
-  photo   Bytes?    // Store image as binary (BLOB)
 
-  // Relations
-  classes Classes[] // 1 school → many classes
-}
-
-model Classes {
-  id        Int     @id @default(autoincrement())
-  class     String
-  section   String
-  school_id Int
-
-  // Relations
-  school    School  @relation(fields: [school_id], references: [id])
+  school School  @relation(fields: [school_id], references: [id])
+  class  Classes @relation(fields: [class_id], references: [id])
 }

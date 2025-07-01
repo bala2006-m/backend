@@ -7,13 +7,13 @@ export declare class StudentsController {
     getStudentByUsername(username: string): Promise<{
         status: string;
         student: {
-            name: string;
-            gender: import(".prisma/client").$Enums.Gender;
+            school_id: number;
+            class_id: number;
+            name: string | null;
             email: string;
+            gender: import(".prisma/client").$Enums.Gender | null;
             mobile: string;
             photo: Uint8Array<ArrayBufferLike> | null;
-            class_id: number;
-            school_id: number;
         };
         message?: undefined;
     } | {
@@ -31,16 +31,16 @@ export declare class StudentsController {
     } | {
         status: string;
         student: {
-            id: number;
-            username: string;
-            name: string;
-            gender: import(".prisma/client").$Enums.Gender;
-            email: string;
-            mobile: string;
-            photo: Uint8Array | null;
-            class_id: number;
             school_id: number;
+            class_id: number;
+            username: string;
+            name: string | null;
+            id: number;
+            email: string;
+            gender: import(".prisma/client").$Enums.Gender | null;
+            mobile: string;
             password: string;
+            photo: Uint8Array | null;
         };
         message?: undefined;
     }>;
@@ -56,11 +56,11 @@ export declare class StudentsController {
         status: string;
         count: number;
         students: {
-            id: number;
             username: string;
-            name: string;
-            gender: import(".prisma/client").$Enums.Gender;
+            name: string | null;
+            id: number;
             email: string;
+            gender: import(".prisma/client").$Enums.Gender | null;
             mobile: string;
         }[];
     } | {
@@ -71,11 +71,11 @@ export declare class StudentsController {
         status: string;
         count: number;
         students: {
-            id: number;
             username: string;
-            name: string;
-            gender: import(".prisma/client").$Enums.Gender;
+            name: string | null;
+            id: number;
             email: string;
+            gender: import(".prisma/client").$Enums.Gender | null;
             mobile: string;
         }[];
     } | {

@@ -1,3 +1,4 @@
+// src/school/schools.service.ts
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../common/prisma.service';
 
@@ -12,7 +13,7 @@ export class SchoolsService {
         id: true,
         name: true,
         address: true,
-        photo: true, // assuming this is a `Bytes` field in your Prisma schema
+        photo: true,
       },
     });
   }

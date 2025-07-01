@@ -5,7 +5,7 @@ import { PrismaService } from '../common/prisma.service';
 export class ClassesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  // Fetch a specific class by school ID and class ID
+
   async getClassData(schoolId: number, classId: number) {
     return this.prisma.classes.findFirst({
       where: {

@@ -33,10 +33,10 @@ export class StudentsController {
 
     return this.studentsService.deleteStudent(username);
   }
-  @Put('change-password')
-    async changePassword(@Body() dto: ChangePasswordDto) {
-      return this.studentsService.changePassword(dto);
-    }
+ @Post('change-password')
+   async changePassword(@Body() dto: ChangePasswordDto) {
+     return this.studentsService.changeStudentPassword(dto);
+   }
 @Get('all-by-class')
   async getAllByClass(@Query('class_id') classId: string) {
     if (!classId) {

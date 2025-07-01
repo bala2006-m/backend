@@ -12,17 +12,31 @@ async fetchAttendanceByClassId(class_id: string, school_id: string, username: st
     Array<{ date: Date; fn_status: string; an_status: string }>
   >(Prisma.sql`
     SELECT date, fn_status, an_status
-    FROM student_attendance
+    FROM studentAttendance
     WHERE class_id = ${class_id} AND school_id = ${school_id} AND username = ${username}
   `);
-}  async markStudentAttendance(dto: CreateAttendanceDto) {
-    // your code here
-  }
+}
+
+ async markStudentAttendance(dto: CreateAttendanceDto) {
+const { username, date, session, status, school_id ,class_id} = dto;
+  const column = session === 'FN' ? 'fn_status' : 'an_status';
+
+ const query = `
+   INSERT INTO studentAttendance(username, date, ${column}, school_id, class_id)
+   VALUES (?, ?, ?, ?, ?)
+   ON DUPLICATE KEY UPDATE ${column} = VALUES(${column})
+ `;
+
+
+  await this.prisma.$executeRawUnsafe(query, username, date, status, school_id,class_id);
+
+  return { status: 'success', message: 'Student attendance recorded' };
+}
   async getAttendanceByClassAndDate(class_id: string, date: string) {
     const results = await this.prisma.$queryRawUnsafe<any[]>(`
       SELECT s.username, s.name, sa.fn_status, sa.an_status
       FROM student s
-      LEFT JOIN student_attendance sa
+      LEFT JOIN studentAttendance sa
         ON s.username = sa.username AND sa.date = ?
       WHERE s.class_id = ?
       ORDER BY s.name ASC
@@ -38,7 +52,7 @@ async getMonthlySummary(username: string, month: number, year: number) {
   const fromDate = new Date(year, month - 1, 1); // JS months = 0-based
   const toDate = new Date(year, month, 0); // Last day of the month
 
-  const records = await this.prisma.student_attendance.findMany({
+  const records = await this.prisma.studentAttendance.findMany({
     where: {
       username,
       date: {
@@ -63,7 +77,7 @@ async getMonthlySummary(username: string, month: number, year: number) {
   };
 }
 async getDailySummary(username: string, date: string) {
-  const record = await this.prisma.student_attendance.findUnique({
+  const record = await this.prisma.studentAttendance.findUnique({
     where: {
       username_date: {
         username,
@@ -98,7 +112,7 @@ async markStaffAttendance(dto: CreateStaffAttendanceDto) {
   return { status: 'success', message: 'Staff attendance recorded' };
 }
 async getStaffDailySummary(username: string, date: string) {
-  const record = await this.prisma.staff_attendance.findUnique({
+  const record = await this.prisma.staffAttendance.findUnique({
     where: {
       username_date: {
         username,
@@ -122,7 +136,7 @@ async getStaffMonthly(username: string, month: number, year: number) {
   const from = new Date(year, month - 1, 1);
   const to = new Date(year, month, 0);
 
-  const records = await this.prisma.staff_attendance.findMany({
+  const records = await this.prisma.staffAttendance.findMany({
     where: {
       username,
       date: { gte: from, lte: to },

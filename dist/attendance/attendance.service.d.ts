@@ -9,7 +9,10 @@ export declare class AttendanceService {
         fn_status: string;
         an_status: string;
     }[]>;
-    markStudentAttendance(dto: CreateAttendanceDto): Promise<void>;
+    markStudentAttendance(dto: CreateAttendanceDto): Promise<{
+        status: string;
+        message: string;
+    }>;
     getAttendanceByClassAndDate(class_id: string, date: string): Promise<{
         status: string;
         count: number;
@@ -22,8 +25,8 @@ export declare class AttendanceService {
         year: number;
         records: {
             date: Date;
-            fn_status: string | null;
-            an_status: string | null;
+            fn_status: string;
+            an_status: string;
         }[];
     }>;
     getDailySummary(username: string, date: string): Promise<{
@@ -31,8 +34,11 @@ export declare class AttendanceService {
         date: string;
         username: string;
         record: {
-            fn_status: string | null;
-            an_status: string | null;
+            fn_status: string;
+            an_status: string;
+        } | {
+            fn_status: null;
+            an_status: null;
         };
     }>;
     markStaffAttendance(dto: CreateStaffAttendanceDto): Promise<{
@@ -44,8 +50,11 @@ export declare class AttendanceService {
         date: string;
         username: string;
         record: {
-            fn_status: string | null;
-            an_status: string | null;
+            fn_status: string;
+            an_status: string;
+        } | {
+            fn_status: null;
+            an_status: null;
         };
     }>;
     getStaffMonthly(username: string, month: number, year: number): Promise<{
@@ -55,8 +64,8 @@ export declare class AttendanceService {
         year: number;
         records: {
             date: Date;
-            fn_status: string | null;
-            an_status: string | null;
+            fn_status: string;
+            an_status: string;
         }[];
     }>;
 }

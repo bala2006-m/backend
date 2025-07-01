@@ -1,5 +1,6 @@
 import { Gender } from '@prisma/client';
 export declare class RegisterStaffDto {
+    id: number;
     username: string;
     designation: string;
     name: string;

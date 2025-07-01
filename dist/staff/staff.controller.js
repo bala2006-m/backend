@@ -18,10 +18,59 @@ const staff_service_1 = require("./staff.service");
 const register_staff_dto_1 = require("./dto/register-staff.dto");
 const update_staff_dto_1 = require("./dto/update-staff.dto");
 const change_password_dto_1 = require("./dto/change-password.dto");
+const common_2 = require("@nestjs/common");
 let StaffController = class StaffController {
     staffService;
     constructor(staffService) {
         this.staffService = staffService;
+    }
+    async updateProfile(username, updateData) {
+        const staff = await this.staffService.findByUsername(username);
+        if (!staff) {
+            throw new common_2.NotFoundException('Staff not found');
+        }
+        const updated = await this.staffService.updateProfile(username, updateData);
+        return { status: 'success', data: updated };
+    }
+    async getProfileByUsername1(username) {
+        if (!username) {
+            return {
+                status: 'error',
+                message: 'Missing or empty username parameter.',
+            };
+        }
+        try {
+            const staff = await this.staffService.getProfileByUsername(username);
+            if (staff) {
+                return {
+                    status: 'success',
+                    staff: {
+                        id: staff.id,
+                        username: staff.username,
+                        email: staff.email,
+                        school_id: staff.school_id,
+                        name: staff.name,
+                        designation: staff.designation,
+                        gender: staff.gender,
+                        mobile: staff.mobile,
+                    },
+                };
+            }
+            else {
+                return {
+                    status: 'success',
+                    staff: null,
+                    message: `No staff found for username: ${username}`,
+                };
+            }
+        }
+        catch (error) {
+            console.error('Controller error:', error);
+            return {
+                status: 'error',
+                message: 'Database query failed.',
+            };
+        }
     }
     async getByUsername(username) {
         if (!username) {
@@ -86,6 +135,21 @@ let StaffController = class StaffController {
     }
 };
 exports.StaffController = StaffController;
+__decorate([
+    (0, common_1.Put)('update/:username'),
+    __param(0, (0, common_1.Param)('username')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, update_staff_dto_1.UpdateStaffDto]),
+    __metadata("design:returntype", Promise)
+], StaffController.prototype, "updateProfile", null);
+__decorate([
+    (0, common_1.Get)('fetch-staffs'),
+    __param(0, (0, common_1.Query)('username')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], StaffController.prototype, "getProfileByUsername1", null);
 __decorate([
     (0, common_1.Get)('fetch-by-username'),
     __param(0, (0, common_1.Query)('username')),

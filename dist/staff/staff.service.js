@@ -18,6 +18,31 @@ let StaffService = class StaffService {
     constructor(prisma) {
         this.prisma = prisma;
     }
+    async updateProfile(username, data) {
+        return this.prisma.staff.update({
+            where: { username },
+            data,
+        });
+    }
+    async getProfileByUsername(username) {
+        console.log('Fetching profile for username:', username);
+        if (!username) {
+            throw new common_1.BadRequestException('Username is required');
+        }
+        return this.prisma.staff.findUnique({
+            where: { username },
+            select: {
+                id: true,
+                username: true,
+                email: true,
+                name: true,
+                mobile: true,
+                gender: true,
+                designation: true,
+                school_id: true,
+            },
+        });
+    }
     async findByUsername(username) {
         try {
             return await this.prisma.staff.findUnique({

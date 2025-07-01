@@ -31,7 +31,7 @@ export declare class DashboardController {
         school_id: number;
         date: string;
         summary: {
-            class_id: string;
+            class_id: number;
             total_students: number;
             fn_present: number;
             fn_absent: number;

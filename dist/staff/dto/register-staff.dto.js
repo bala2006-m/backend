@@ -13,6 +13,7 @@ exports.RegisterStaffDto = void 0;
 const class_validator_1 = require("class-validator");
 const client_1 = require("@prisma/client");
 class RegisterStaffDto {
+    id;
     username;
     designation;
     name;
@@ -23,6 +24,11 @@ class RegisterStaffDto {
     password;
 }
 exports.RegisterStaffDto = RegisterStaffDto;
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", Number)
+], RegisterStaffDto.prototype, "id", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),

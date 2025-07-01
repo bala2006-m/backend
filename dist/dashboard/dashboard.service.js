@@ -21,13 +21,13 @@ let DashboardService = class DashboardService {
         const d = new Date(date);
         const totalStudents = await this.prisma.student.count({ where: { school_id: school_id }
         });
-        const studentAttendance = await this.prisma.student_attendance.groupBy({
+        const studentAttendance = await this.prisma.studentAttendance.groupBy({
             by: ['fn_status', 'an_status'],
             where: { school_id, date: d },
             _count: true,
         });
         const totalStaff = await this.prisma.staff.count({ where: { school_id } });
-        const staffAttendance = await this.prisma.staff_attendance.groupBy({
+        const staffAttendance = await this.prisma.staffAttendance.groupBy({
             by: ['fn_status', 'an_status'],
             where: { school_id, date: d },
             _count: true,
@@ -64,7 +64,7 @@ let DashboardService = class DashboardService {
             where: { school_id: Number(school_id) },
             _count: { id: true },
         });
-        const attendance = await this.prisma.student_attendance.groupBy({
+        const attendance = await this.prisma.studentAttendance.groupBy({
             by: ['class_id', 'fn_status', 'an_status'],
             where: { school_id, date: d },
             _count: true,
@@ -72,7 +72,7 @@ let DashboardService = class DashboardService {
         const buildClassSummary = (class_id) => {
             const total = classGroups.find((c) => c.class_id === Number(class_id))?._count.id ?? 0;
             const fnPresent = attendance
-                .filter((a) => a.class_id === class_id && a.fn_status === 'P')
+                .filter((a) => a.class_id == class_id && a.fn_status == 'P')
                 .reduce((acc, a) => acc + a._count, 0);
             const fnAbsent = attendance
                 .filter((a) => a.class_id === class_id && a.fn_status === 'A')
@@ -92,7 +92,7 @@ let DashboardService = class DashboardService {
                 an_absent: anAbsent,
             };
         };
-        const summary = classGroups.map((g) => buildClassSummary(g.class_id.toString()));
+        const summary = classGroups.map((g) => buildClassSummary(g.class_id));
         return {
             status: 'success',
             school_id,

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException,BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../common/prisma.service';
 import { RegisterStaffDto } from './dto/register-staff.dto';
 import * as bcrypt from 'bcrypt';
@@ -7,6 +7,38 @@ import { UpdateStaffDto } from './dto/update-staff.dto';
 @Injectable()
 export class StaffService {
   constructor(private prisma: PrismaService) {}
+ async updateProfile(username: string, data: UpdateStaffDto) {
+    return this.prisma.staff.update({
+      where: { username },
+      data,
+    });
+  }
+  async getProfileByUsername(username: string) {
+    console.log('Fetching profile for username:', username);
+
+    if (!username) {
+      throw new BadRequestException('Username is required');
+    }
+
+    return this.prisma.staff.findUnique({
+      where: { username },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        name: true,
+        mobile: true,
+        gender: true,
+        designation: true,
+        school_id: true,
+      },
+    });
+
+  }
+
+
+
+
 async findByUsername(username: string) {
   try {
     return await this.prisma.staff.findUnique({

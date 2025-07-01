@@ -11,13 +11,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UpdateStaffDto = void 0;
 const class_validator_1 = require("class-validator");
-const client_1 = require("@prisma/client");
 class UpdateStaffDto {
     name;
     email;
-    gender;
     mobile;
-    school_id;
+    designation;
 }
 exports.UpdateStaffDto = UpdateStaffDto;
 __decorate([
@@ -34,15 +32,10 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], UpdateStaffDto.prototype, "gender", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
 ], UpdateStaffDto.prototype, "mobile", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
-    __metadata("design:type", Number)
-], UpdateStaffDto.prototype, "school_id", void 0);
+    __metadata("design:type", String)
+], UpdateStaffDto.prototype, "designation", void 0);
 //# sourceMappingURL=update-staff.dto.js.map
