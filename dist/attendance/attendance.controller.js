@@ -23,8 +23,43 @@ let AttendanceController = class AttendanceController {
     constructor(attendanceService) {
         this.attendanceService = attendanceService;
     }
+    async getAbsentStudents(date, schoolId, classId) {
+        if (!date || !schoolId || !classId) {
+            throw new common_1.BadRequestException('Missing parameters');
+        }
+        const parsedDate = new Date(date);
+        const schoolIdInt = parseInt(schoolId);
+        const classIdInt = parseInt(classId);
+        const fnAbsentees = await this.attendanceService.getAbsentees(parsedDate, schoolIdInt, classIdInt, 'fn_status');
+        const anAbsentees = await this.attendanceService.getAbsentees(parsedDate, schoolIdInt, classIdInt, 'an_status');
+        return {
+            status: 'success',
+            fn_absentees: fnAbsentees,
+            an_absentees: anAbsentees,
+        };
+    }
+    async checkAttendanceStatus(schoolId, classId, date) {
+        if (!schoolId || !classId || !date) {
+            throw new common_1.BadRequestException('Missing required parameters: school_id, class_id, or date');
+        }
+        const attendanceExists = await this.attendanceService.checkAttendanceExists(schoolId, classId, date);
+        return {
+            status: 'success',
+            attendance_exists: attendanceExists,
+        };
+    }
     async markStudent(dto) {
         return this.attendanceService.markStudentAttendance(dto);
+    }
+    async fetchStudentAttendances(date, schoolId) {
+        if (!schoolId) {
+            throw new common_1.BadRequestException('Missing school_id');
+        }
+        const attendance = await this.attendanceService.getStudentAttendance(date, schoolId);
+        return {
+            status: 'success',
+            staff: attendance,
+        };
     }
     async fetchStudentAttendance(query) {
         const { class_id, school_id, username } = query;
@@ -37,11 +72,11 @@ let AttendanceController = class AttendanceController {
             student,
         };
     }
-    async getAttendanceByClassAndDate(classId, date) {
+    async getAttendanceByClassAndDate(classId, date, schoolId) {
         if (!classId || !date) {
             return { status: 'error', message: 'Missing class_id or date' };
         }
-        return this.attendanceService.getAttendanceByClassAndDate(classId, date);
+        return this.attendanceService.getAttendanceByClassAndDate(classId, date, schoolId);
     }
     async getMonthlySummary(username, month, year) {
         if (!username || !month || !year) {
@@ -67,8 +102,32 @@ let AttendanceController = class AttendanceController {
     async getStaffMonthly(username, month, year) {
         return this.attendanceService.getStaffMonthly(username, +month, +year);
     }
+    async fetchStaffAttendance(date, schoolId) {
+        if (date && !schoolId) {
+            throw new common_1.BadRequestException('school_id is required when filtering by date');
+        }
+        return this.attendanceService.fetchAttendance(date, schoolId);
+    }
 };
 exports.AttendanceController = AttendanceController;
+__decorate([
+    (0, common_1.Get)('fetch_stu_absent_all'),
+    __param(0, (0, common_1.Query)('date')),
+    __param(1, (0, common_1.Query)('school_id')),
+    __param(2, (0, common_1.Query)('class_id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:returntype", Promise)
+], AttendanceController.prototype, "getAbsentStudents", null);
+__decorate([
+    (0, common_1.Get)('check_attendance_status'),
+    __param(0, (0, common_1.Query)('school_id')),
+    __param(1, (0, common_1.Query)('class_id')),
+    __param(2, (0, common_1.Query)('date')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:returntype", Promise)
+], AttendanceController.prototype, "checkAttendanceStatus", null);
 __decorate([
     (0, common_1.Post)('post_student_attendance'),
     __param(0, (0, common_1.Body)()),
@@ -76,6 +135,14 @@ __decorate([
     __metadata("design:paramtypes", [create_attendance_dto_1.CreateAttendanceDto]),
     __metadata("design:returntype", Promise)
 ], AttendanceController.prototype, "markStudent", null);
+__decorate([
+    (0, common_1.Get)('student/fetch_stu_attendance'),
+    __param(0, (0, common_1.Query)('date')),
+    __param(1, (0, common_1.Query)('school_id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], AttendanceController.prototype, "fetchStudentAttendances", null);
 __decorate([
     (0, common_1.Get)('student/fetch_stu_attendance_by_class_id'),
     __param(0, (0, common_1.Query)()),
@@ -87,8 +154,9 @@ __decorate([
     (0, common_1.Get)('student/class'),
     __param(0, (0, common_1.Query)('class_id')),
     __param(1, (0, common_1.Query)('date')),
+    __param(2, (0, common_1.Query)('school_id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", Promise)
 ], AttendanceController.prototype, "getAttendanceByClassAndDate", null);
 __decorate([
@@ -132,6 +200,14 @@ __decorate([
     __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", Promise)
 ], AttendanceController.prototype, "getStaffMonthly", null);
+__decorate([
+    (0, common_1.Get)('staff/fetch_staff_attendance'),
+    __param(0, (0, common_1.Query)('date')),
+    __param(1, (0, common_1.Query)('school_id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], AttendanceController.prototype, "fetchStaffAttendance", null);
 exports.AttendanceController = AttendanceController = __decorate([
     (0, common_1.Controller)('attendance'),
     __metadata("design:paramtypes", [attendance_service_1.AttendanceService])

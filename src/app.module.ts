@@ -11,6 +11,9 @@ import { ClassTimetableModule } from './timetable/class-timetable.module';
 import {FeedbackModule} from './feedback/feedback.module';
 import { SchoolsModule } from './school/schools.module';
 import { ClassesModule } from './class/classes.module';
+import { AdminModule } from './admin/admin.module';
+import {AuthModule } from './auth/auth.module';
+import { AttendanceUserModule } from './attendance-user/attendance-user.module'
 @Module({
   imports: [
       StudentsModule,
@@ -23,6 +26,9 @@ import { ClassesModule } from './class/classes.module';
      FeedbackModule,
      SchoolsModule,
      ClassesModule,
+     AdminModule,
+     AuthModule,
+     AttendanceUserModule,
     // add more modules here
   ],
   controllers: [AppController],

@@ -111,12 +111,12 @@ async getByUsername(@Query('username') username: string) {
     return this.staffService.register(dto);
   }
   @Get('all-by-school')
-    async getAllBySchoolId(@Query('school_id') schoolId: number) {
+    async getAllBySchoolId(@Query('school_id') schoolId: string) {
       if (!schoolId) {
         return { status: 'error', message: 'Missing school_id' };
       }
-
-      return this.staffService.getAllBySchool(schoolId);
+const id = parseInt(schoolId, 10);
+      return this.staffService.getAllBySchool(id);
     }
 @Put('update')
   async updateStaff(
@@ -139,4 +139,13 @@ async getByUsername(@Query('username') username: string) {
   async changePassword(@Body() dto: ChangeStaffPasswordDto) {
     return this.staffService.changePassword(dto);
   }
+@Get('count')
+  async countStaff(@Query('school_id') schoolId: string) {
+    if (!schoolId) {
+      throw new BadRequestException('Missing or empty school_id');
+    }
+
+    return this.staffService.countStaffBySchoolId(+schoolId);
+  }
+
 }

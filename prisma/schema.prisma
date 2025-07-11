@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:bala30012006@localhost:3306/school_attendance1"
+  url      = "mysql://admin:Ramchin123@school-attendance.cr2ue6u44sny.eu-north-1.rds.amazonaws.com:3306/school_attendance"
 }
 
 enum Gender {
@@ -30,8 +30,9 @@ model Attendance_user {
   school_id Int
 
   school  School   @relation(fields: [school_id], references: [id])
-  staff   Staff?   @relation("UserToStaff") // No fields/references here
+  staff   Staff?   @relation("UserToStaff")
   student Student?
+  admin   Admin?
 
   @@index([school_id])
 }
@@ -51,6 +52,7 @@ model School {
   classTimetables    ClassTimetable[]
   staffAttendances   StaffAttendance[]
   studentAttendances StudentAttendance[]
+  admins             Admin[]
 }
 
 model Classes {
@@ -77,6 +79,7 @@ model Holidays {
   class_ids Json
   fn        String?  @db.Char(1)
   an        String   @db.Char(1)
+
   school  School?   @relation(fields: [school_id], references: [id])
   classes Classes[] @relation("HolidayClasses")
 
@@ -84,15 +87,16 @@ model Holidays {
 }
 
 model Staff {
-  id          Int               @id @default(autoincrement())
-  username    String            @unique
+  id          Int     @id @default(autoincrement())
+  username    String  @unique
   designation String
   name        String?
-  email       String            @unique
+  email       String  @unique
   gender      Gender?
-  mobile      String            @unique
+  mobile      String  @unique
   school_id   Int
   password    String
+
   school      School            @relation(fields: [school_id], references: [id])
   user        Attendance_user   @relation("UserToStaff", fields: [username], references: [username], onDelete: Cascade, onUpdate: Cascade)
   attendances StaffAttendance[]
@@ -104,8 +108,8 @@ model Staff {
 model StaffAttendance {
   username  String
   date      DateTime
-  fn_status String   @default("null")
-  an_status String   @default("null")
+  fn_status String   @default("Absent")
+  an_status String   @default("Absent")
   school_id Int?
 
   school School? @relation(fields: [school_id], references: [id])
@@ -116,16 +120,17 @@ model StaffAttendance {
 }
 
 model Student {
-  id         Int                 @id @default(autoincrement())
-  username   String              @unique
-  name       String?
-  gender     Gender?
-  email      String              @unique
-  mobile     String              @unique
-  class_id   Int
-  school_id  Int
-  photo      Bytes?
-  password   String
+  id        Int     @id @default(autoincrement())
+  username  String  @unique
+  name      String?
+  gender    Gender?
+  email     String  @unique
+  mobile    String  @unique
+  class_id  Int
+  school_id Int
+  photo     Bytes?
+  password  String
+
   class      Classes             @relation(fields: [class_id], references: [id])
   school     School              @relation(fields: [school_id], references: [id])
   user       Attendance_user     @relation(fields: [username], references: [username])
@@ -139,8 +144,8 @@ model Student {
 model StudentAttendance {
   username  String
   date      DateTime
-  fn_status String   @default("null")
-  an_status String   @default("null")
+  fn_status String   @default("Absent")
+  an_status String   @default("Absent")
   school_id Int
   class_id  Int
 
@@ -154,16 +159,18 @@ model StudentAttendance {
 }
 
 model ClassTimetable {
-  id           Int      @id @default(autoincrement())
-  school_id    String
-  class_id     String
-  dayOfWeek    String
+  id           Int       @id @default(autoincrement())
+  schoolId     Int?
+  classesId    Int?
+  dayOfWeek    DayOfWeek
   periodNumber Int
   subject      String
-  School       School?  @relation(fields: [schoolId], references: [id])
-  schoolId     Int?
-  Classes      Classes? @relation(fields: [classesId], references: [id])
-  classesId    Int?
+
+  School  School?  @relation(fields: [schoolId], references: [id])
+  Classes Classes? @relation(fields: [classesId], references: [id])
+
+  @@index([schoolId])
+  @@index([classesId])
 }
 
 model Feedback {
@@ -177,4 +184,19 @@ model Feedback {
 
   school School  @relation(fields: [school_id], references: [id])
   class  Classes @relation(fields: [class_id], references: [id])
+}
+
+model Admin {
+  id          Int     @id @default(autoincrement())
+  name        String?
+  designation String
+  mobile      String  @unique
+  photo       Bytes?
+  username    String  @unique
+  school_id   Int
+
+  school School          @relation(fields: [school_id], references: [id])
+  user   Attendance_user @relation(fields: [username], references: [username])
+
+  @@index([school_id])
 }

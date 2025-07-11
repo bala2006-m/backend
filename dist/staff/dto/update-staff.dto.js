@@ -9,13 +9,20 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateStaffDto = void 0;
+exports.UpdateStaffDto = exports.Gender = void 0;
 const class_validator_1 = require("class-validator");
+var Gender;
+(function (Gender) {
+    Gender["Male"] = "M";
+    Gender["Female"] = "F";
+    Gender["Other"] = "O";
+})(Gender || (exports.Gender = Gender = {}));
 class UpdateStaffDto {
     name;
     email;
     mobile;
     designation;
+    gender;
 }
 exports.UpdateStaffDto = UpdateStaffDto;
 __decorate([
@@ -38,4 +45,11 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], UpdateStaffDto.prototype, "designation", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsEnum)(Gender, {
+        message: 'Gender must be one of M, F, or O',
+    }),
+    __metadata("design:type", String)
+], UpdateStaffDto.prototype, "gender", void 0);
 //# sourceMappingURL=update-staff.dto.js.map

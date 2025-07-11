@@ -4,12 +4,16 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 export declare class StudentsService {
     private prisma;
     constructor(prisma: PrismaService);
+    getSchoolAndClassByUsername(username: string): Promise<{
+        school_id: number;
+        class_id: number;
+    } | null>;
     findByUsername(username: string): Promise<{
         status: string;
         student: {
             school_id: number;
-            class_id: number;
             name: string | null;
+            class_id: number;
             email: string;
             gender: import(".prisma/client").$Enums.Gender | null;
             mobile: string;
@@ -29,10 +33,10 @@ export declare class StudentsService {
         status: string;
         student: {
             school_id: number;
+            id: number;
+            name: string | null;
             class_id: number;
             username: string;
-            name: string | null;
-            id: number;
             email: string;
             gender: import(".prisma/client").$Enums.Gender | null;
             mobile: string;
@@ -53,9 +57,9 @@ export declare class StudentsService {
         status: string;
         count: number;
         students: {
-            username: string;
-            name: string | null;
             id: number;
+            name: string | null;
+            username: string;
             email: string;
             gender: import(".prisma/client").$Enums.Gender | null;
             mobile: string;
@@ -65,12 +69,36 @@ export declare class StudentsService {
         status: string;
         count: number;
         students: {
-            username: string;
-            name: string | null;
             id: number;
+            name: string | null;
+            username: string;
             email: string;
             gender: import(".prisma/client").$Enums.Gender | null;
             mobile: string;
         }[];
     }>;
+    countStudentsBySchool(schoolId: number): Promise<number>;
+    getAllStudents(school_id?: string): Promise<{
+        status: string;
+        students: {
+            name: string | null;
+            username: string;
+            email: string;
+            gender: import(".prisma/client").$Enums.Gender | null;
+            mobile: string;
+        }[];
+        message?: undefined;
+        details?: undefined;
+    } | {
+        status: string;
+        message: string;
+        details: any;
+        students?: undefined;
+    }>;
+    findStudentByUsernameClassSchool(username: string, classId: number, schoolId: number): Promise<{
+        name: string | null;
+        email: string;
+        gender: import(".prisma/client").$Enums.Gender | null;
+        mobile: string;
+    } | null>;
 }

@@ -4,6 +4,7 @@ import { CreateStaffAttendanceDto } from './dto/create-staff-attendance.dto';
 export declare class AttendanceService {
     private prisma;
     constructor(prisma: PrismaService);
+    checkAttendanceExists(schoolId: string, classId: string, date: string): Promise<boolean>;
     fetchAttendanceByClassId(class_id: string, school_id: string, username: string): Promise<{
         date: Date;
         fn_status: string;
@@ -13,7 +14,13 @@ export declare class AttendanceService {
         status: string;
         message: string;
     }>;
-    getAttendanceByClassAndDate(class_id: string, date: string): Promise<{
+    getStudentAttendance(date?: string, schoolId?: string): Promise<{
+        date: Date;
+        username: string;
+        fn_status: string;
+        an_status: string;
+    }[]>;
+    getAttendanceByClassAndDate(class_id: string, date: string, school_id: string): Promise<{
         status: string;
         count: number;
         attendance: any[];
@@ -68,4 +75,14 @@ export declare class AttendanceService {
             an_status: string;
         }[];
     }>;
+    fetchAttendance(date?: string, schoolId?: string): Promise<{
+        status: string;
+        staff: {
+            date: Date;
+            username: string;
+            fn_status: string;
+            an_status: string;
+        }[];
+    }>;
+    getAbsentees(date: Date, schoolId: number, classId: number, sessionField: 'fn_status' | 'an_status'): Promise<string[]>;
 }

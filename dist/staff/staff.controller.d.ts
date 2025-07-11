@@ -8,14 +8,14 @@ export declare class StaffController {
     updateProfile(username: string, updateData: UpdateStaffDto): Promise<{
         status: string;
         data: {
+            school_id: number;
             id: number;
+            name: string | null;
             username: string;
             designation: string;
-            name: string | null;
             email: string;
             gender: import(".prisma/client").$Enums.Gender | null;
             mobile: string;
-            school_id: number;
             password: string;
         };
     }>;
@@ -67,25 +67,26 @@ export declare class StaffController {
     } | {
         status: string;
         staff: {
+            school_id: number;
             id: number;
+            name: string | null;
             username: string;
             designation: string;
-            name: string | null;
             email: string;
             gender: import(".prisma/client").$Enums.Gender | null;
             mobile: string;
-            school_id: number;
             password: string;
         };
         message?: undefined;
     }>;
-    getAllBySchoolId(schoolId: number): Promise<{
+    getAllBySchoolId(schoolId: string): Promise<{
         status: string;
         count: number;
         staff: {
             id: number;
-            username: string;
             name: string | null;
+            username: string;
+            designation: string;
             email: string;
             gender: import(".prisma/client").$Enums.Gender | null;
             mobile: string;
@@ -97,14 +98,14 @@ export declare class StaffController {
     updateStaff(username: string, dto: UpdateStaffDto): Promise<{
         status: string;
         staff: {
+            school_id: number;
             id: number;
+            name: string | null;
             username: string;
             designation: string;
-            name: string | null;
             email: string;
             gender: import(".prisma/client").$Enums.Gender | null;
             mobile: string;
-            school_id: number;
             password: string;
         };
         message?: undefined;
@@ -119,5 +120,9 @@ export declare class StaffController {
     changePassword(dto: ChangeStaffPasswordDto): Promise<{
         status: string;
         message: string;
+    }>;
+    countStaff(schoolId: string): Promise<{
+        status: string;
+        count: number;
     }>;
 }

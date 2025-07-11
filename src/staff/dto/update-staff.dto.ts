@@ -1,5 +1,10 @@
-// src/staff/dto/update-staff.dto.ts
-import { IsOptional, IsString, IsEmail } from 'class-validator';
+import { IsOptional, IsString, IsEmail, IsEnum } from 'class-validator';
+
+export enum Gender {
+  Male = 'M',
+  Female = 'F',
+  Other = 'O',
+}
 
 export class UpdateStaffDto {
   @IsOptional()
@@ -17,4 +22,10 @@ export class UpdateStaffDto {
   @IsOptional()
   @IsString()
   designation?: string;
+
+  @IsOptional()
+  @IsEnum(Gender, {
+    message: 'Gender must be one of M, F, or O',
+  })
+  gender?: Gender;
 }

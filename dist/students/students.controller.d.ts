@@ -4,12 +4,33 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 export declare class StudentsController {
     private readonly studentsService;
     constructor(studentsService: StudentsService);
+    getSchoolAndClass(username: string): Promise<{
+        school_id: number;
+        class_id: number;
+    } | null>;
+    fetchAllStudents(schoolId?: string): Promise<{
+        status: string;
+        students: {
+            name: string | null;
+            username: string;
+            email: string;
+            gender: import(".prisma/client").$Enums.Gender | null;
+            mobile: string;
+        }[];
+        message?: undefined;
+        details?: undefined;
+    } | {
+        status: string;
+        message: string;
+        details: any;
+        students?: undefined;
+    }>;
     getStudentByUsername(username: string): Promise<{
         status: string;
         student: {
             school_id: number;
-            class_id: number;
             name: string | null;
+            class_id: number;
             email: string;
             gender: import(".prisma/client").$Enums.Gender | null;
             mobile: string;
@@ -32,10 +53,10 @@ export declare class StudentsController {
         status: string;
         student: {
             school_id: number;
+            id: number;
+            name: string | null;
             class_id: number;
             username: string;
-            name: string | null;
-            id: number;
             email: string;
             gender: import(".prisma/client").$Enums.Gender | null;
             mobile: string;
@@ -56,9 +77,9 @@ export declare class StudentsController {
         status: string;
         count: number;
         students: {
-            username: string;
-            name: string | null;
             id: number;
+            name: string | null;
+            username: string;
             email: string;
             gender: import(".prisma/client").$Enums.Gender | null;
             mobile: string;
@@ -71,9 +92,9 @@ export declare class StudentsController {
         status: string;
         count: number;
         students: {
-            username: string;
-            name: string | null;
             id: number;
+            name: string | null;
+            username: string;
             email: string;
             gender: import(".prisma/client").$Enums.Gender | null;
             mobile: string;
@@ -81,5 +102,23 @@ export declare class StudentsController {
     } | {
         status: string;
         message: string;
+    }>;
+    countStudents(schoolId?: string): Promise<{
+        status: string;
+        count: number;
+    }>;
+    getStudentByUsername1(username: string, schoolId: string, classId: string): Promise<{
+        status: string;
+        message: string;
+        student?: undefined;
+    } | {
+        status: string;
+        student: {
+            name: string | null;
+            gender: import(".prisma/client").$Enums.Gender | null;
+            email: string;
+            mobile: string;
+        };
+        message?: undefined;
     }>;
 }

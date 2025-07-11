@@ -18,6 +18,15 @@ let StudentsService = class StudentsService {
     constructor(prisma) {
         this.prisma = prisma;
     }
+    async getSchoolAndClassByUsername(username) {
+        return this.prisma.student.findUnique({
+            where: { username },
+            select: {
+                school_id: true,
+                class_id: true,
+            },
+        });
+    }
     async findByUsername(username) {
         try {
             const student = await this.prisma.student.findUnique({
@@ -130,6 +139,57 @@ let StudentsService = class StudentsService {
             count: students.length,
             students,
         };
+    }
+    async countStudentsBySchool(schoolId) {
+        return await this.prisma.student.count({
+            where: {
+                school_id: schoolId,
+            },
+        });
+    }
+    async getAllStudents(school_id) {
+        try {
+            const whereClause = school_id
+                ? { school_id: parseInt(school_id, 10) }
+                : {};
+            const students = await this.prisma.student.findMany({
+                where: whereClause,
+                orderBy: { name: 'asc' },
+                select: {
+                    username: true,
+                    name: true,
+                    gender: true,
+                    email: true,
+                    mobile: true,
+                },
+            });
+            return {
+                status: 'success',
+                students,
+            };
+        }
+        catch (error) {
+            return {
+                status: 'error',
+                message: 'Query failed',
+                details: error.message,
+            };
+        }
+    }
+    async findStudentByUsernameClassSchool(username, classId, schoolId) {
+        return this.prisma.student.findFirst({
+            where: {
+                username,
+                class_id: classId,
+                school_id: schoolId,
+            },
+            select: {
+                name: true,
+                gender: true,
+                email: true,
+                mobile: true,
+            },
+        });
     }
 };
 exports.StudentsService = StudentsService;

@@ -1,10 +1,30 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query,NotFoundException,Post,Body,Param, } from '@nestjs/common';
 import { ClassesService } from './classes.service';
+import { FetchClassIdDto} from './dto/fetch-class-id.dto';
+import { AddClassDto } from './dto/add-class.dto';
 
 @Controller('class')
 export class ClassesController {
   constructor(private readonly classesService: ClassesService) {}
-
+ @Get('all/:schoolId')
+  async getAllClassesBySchool(@Param('schoolId') schoolId: string) {
+    return this.classesService.getAllClassesBySchool(parseInt(schoolId));
+  }
+ @Get('get-name')
+  async getClassNameByIdAndSchool(
+    @Query('class_id') classId: string,
+    @Query('school_id') schoolId: string,
+  ) {
+    const result = await this.classesService.findClassName(+classId, +schoolId);
+    return {
+      status: 'success',
+      data: result,
+    };
+  }
+@Post('add')
+  async addClass(@Body() dto: AddClassDto) {
+    return this.classesService.addClass(dto);
+  }
   @Get('get_class_data')
   async getClassData(
     @Query('school_id') schoolId: string,
@@ -61,4 +81,20 @@ export class ClassesController {
       };
     }
   }
+  @Get('fetch_class_id')
+  async fetchClassId(@Query() query: FetchClassIdDto) {
+    const { school_id, class: className, section } = query;
+
+    const classId = await this.classesService.findClassId(school_id.toString(), className.toString(), section);
+
+    if (!classId) {
+      throw new NotFoundException('Class not found');
+    }
+
+    return {
+      status: 'success',
+      class_id: classId,
+    };
+  }
+
 }

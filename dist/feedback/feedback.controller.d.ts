@@ -7,9 +7,9 @@ export declare class FeedbackController {
         data: {
             feedback: string;
             school_id: number;
-            class_id: number;
-            name: string;
             id: number;
+            name: string;
+            class_id: number;
             email: string;
             created_at: Date;
         };

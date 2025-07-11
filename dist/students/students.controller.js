@@ -22,6 +22,12 @@ let StudentsController = class StudentsController {
     constructor(studentsService) {
         this.studentsService = studentsService;
     }
+    async getSchoolAndClass(username) {
+        return this.studentsService.getSchoolAndClassByUsername(username);
+    }
+    async fetchAllStudents(schoolId) {
+        return this.studentsService.getAllStudents(schoolId);
+    }
     async getStudentByUsername(username) {
         try {
             if (!username) {
@@ -58,8 +64,65 @@ let StudentsController = class StudentsController {
         }
         return this.studentsService.getAllByClass(classId);
     }
+    async countStudents(schoolId) {
+        if (!schoolId) {
+            throw new common_1.BadRequestException({
+                status: 'failure',
+                message: 'Missing or empty school_id',
+            });
+        }
+        const id = parseInt(schoolId, 10);
+        if (isNaN(id)) {
+            throw new common_1.BadRequestException({
+                status: 'failure',
+                message: 'Invalid school_id',
+            });
+        }
+        const count = await this.studentsService.countStudentsBySchool(id);
+        return {
+            status: 'success',
+            count,
+        };
+    }
+    async getStudentByUsername1(username, schoolId, classId) {
+        if (!username || !schoolId || !classId) {
+            throw new common_1.BadRequestException('Missing parameters');
+        }
+        const schoolIdInt = parseInt(schoolId);
+        const classIdInt = parseInt(classId);
+        const student = await this.studentsService.findStudentByUsernameClassSchool(username, classIdInt, schoolIdInt);
+        if (!student) {
+            return {
+                status: 'error',
+                message: 'Student not found',
+            };
+        }
+        return {
+            status: 'success',
+            student: {
+                name: student.name,
+                gender: student.gender,
+                email: student.email,
+                mobile: student.mobile,
+            },
+        };
+    }
 };
 exports.StudentsController = StudentsController;
+__decorate([
+    (0, common_1.Get)('school-class'),
+    __param(0, (0, common_1.Query)('username')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], StudentsController.prototype, "getSchoolAndClass", null);
+__decorate([
+    (0, common_1.Get)('fetch_all_student_data'),
+    __param(0, (0, common_1.Query)('school_id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], StudentsController.prototype, "fetchAllStudents", null);
 __decorate([
     (0, common_1.Get)('by-username'),
     __param(0, (0, common_1.Query)('username')),
@@ -103,6 +166,22 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], StudentsController.prototype, "getAllByClassAndSchool", null);
+__decorate([
+    (0, common_1.Get)('count_student'),
+    __param(0, (0, common_1.Query)('school_id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], StudentsController.prototype, "countStudents", null);
+__decorate([
+    (0, common_1.Get)('fetch_student_name'),
+    __param(0, (0, common_1.Query)('username')),
+    __param(1, (0, common_1.Query)('school_id')),
+    __param(2, (0, common_1.Query)('class_id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:returntype", Promise)
+], StudentsController.prototype, "getStudentByUsername1", null);
 exports.StudentsController = StudentsController = __decorate([
     (0, common_1.Controller)('students'),
     __metadata("design:paramtypes", [students_service_1.StudentsService])

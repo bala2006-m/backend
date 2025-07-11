@@ -7,7 +7,15 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 @Injectable()
 export class StudentsService {
   constructor(private prisma: PrismaService) {}
-
+async getSchoolAndClassByUsername(username: string) {
+    return this.prisma.student.findUnique({
+      where: { username },
+      select: {
+        school_id: true,
+        class_id: true,
+      },
+    });
+  }
   async findByUsername(username: string) {
     try {
       const student = await this.prisma.student.findUnique({
@@ -140,4 +148,60 @@ async getAllByClassAndSchool(class_id: string,school_id: string) {
     students,
   };
 }
+async countStudentsBySchool(schoolId: number): Promise<number> {
+    return await this.prisma.student.count({
+      where: {
+        school_id: schoolId,
+      },
+    });
+  }
+  async getAllStudents(school_id?: string) {
+      try {
+        const whereClause = school_id
+          ? { school_id: parseInt(school_id, 10) }
+          : {};
+
+        const students = await this.prisma.student.findMany({
+          where: whereClause,
+          orderBy: { name: 'asc' },
+          select: {
+            username: true,
+            name: true,
+            gender: true,
+            email: true,
+            mobile: true,
+          },
+        });
+
+        return {
+          status: 'success',
+          students,
+        };
+      } catch (error) {
+        return {
+          status: 'error',
+          message: 'Query failed',
+          details: error.message,
+        };
+      }
+    }
+ async findStudentByUsernameClassSchool(
+    username: string,
+    classId: number,
+    schoolId: number,
+  ) {
+    return this.prisma.student.findFirst({
+      where: {
+        username,
+        class_id: classId,
+        school_id: schoolId,
+      },
+      select: {
+        name: true,
+        gender: true,
+        email: true,
+        mobile: true,
+      },
+    });
+  }
 }

@@ -5,9 +5,27 @@ import { FetchStudentAttendanceDto } from './dto/fetch-student-attendance.dto';
 export declare class AttendanceController {
     private readonly attendanceService;
     constructor(attendanceService: AttendanceService);
+    getAbsentStudents(date: string, schoolId: string, classId: string): Promise<{
+        status: string;
+        fn_absentees: string[];
+        an_absentees: string[];
+    }>;
+    checkAttendanceStatus(schoolId: string, classId: string, date: string): Promise<{
+        status: string;
+        attendance_exists: boolean;
+    }>;
     markStudent(dto: CreateAttendanceDto): Promise<{
         status: string;
         message: string;
+    }>;
+    fetchStudentAttendances(date?: string, schoolId?: string): Promise<{
+        status: string;
+        staff: {
+            date: Date;
+            username: string;
+            fn_status: string;
+            an_status: string;
+        }[];
     }>;
     fetchStudentAttendance(query: FetchStudentAttendanceDto): Promise<{
         status: string;
@@ -22,7 +40,7 @@ export declare class AttendanceController {
         }[];
         message?: undefined;
     }>;
-    getAttendanceByClassAndDate(classId: string, date: string): Promise<{
+    getAttendanceByClassAndDate(classId: string, date: string, schoolId: string): Promise<{
         status: string;
         count: number;
         attendance: any[];
@@ -85,6 +103,15 @@ export declare class AttendanceController {
         year: number;
         records: {
             date: Date;
+            fn_status: string;
+            an_status: string;
+        }[];
+    }>;
+    fetchStaffAttendance(date?: string, schoolId?: string): Promise<{
+        status: string;
+        staff: {
+            date: Date;
+            username: string;
             fn_status: string;
             an_status: string;
         }[];

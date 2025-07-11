@@ -17,15 +17,75 @@ let HolidaysService = class HolidaysService {
     constructor(prisma) {
         this.prisma = prisma;
     }
+    async addHoliday(dto) {
+        try {
+            const existing = await this.prisma.holidays.findFirst({
+                where: {
+                    date: new Date(dto.date),
+                    school_id: dto.school_id,
+                },
+            });
+            if (existing) {
+                throw new common_1.ConflictException('Holiday already exists for this date');
+            }
+            const holiday = await this.prisma.holidays.create({
+                data: {
+                    date: new Date(dto.date),
+                    reason: dto.reason,
+                    school_id: dto.school_id,
+                    class_ids: dto.class_ids,
+                    fn: dto.fn,
+                    an: dto.an,
+                },
+            });
+            return {
+                status: 'success',
+                holiday,
+            };
+        }
+        catch (error) {
+            console.error('❌ Failed to create holiday:', error);
+            throw new common_1.InternalServerErrorException('Could not create holiday');
+        }
+    }
+    async fetchHolidays(school_id) {
+        const schoolIdInt = Number(school_id);
+        const holidays = await this.prisma.holidays.findMany({
+            where: {
+                school_id: schoolIdInt,
+            },
+            select: {
+                date: true,
+                reason: true,
+                class_ids: true,
+                fn: true,
+                an: true,
+                classes: {
+                    select: {
+                        id: true,
+                        class: true,
+                        section: true,
+                    },
+                },
+            },
+            orderBy: {
+                date: 'asc',
+            },
+        });
+        return {
+            status: 'success',
+            holidays,
+        };
+    }
     async getHolidaysByClass(schoolId, classId) {
         try {
             const holidays = await this.prisma.$queryRawUnsafe(`
         SELECT DISTINCT date, reason, fn, an
         FROM holidays
         WHERE school_id = ?
-          AND FIND_IN_SET(?, class_ids) > 0
+          AND JSON_CONTAINS(class_ids, ?, '$')
         ORDER BY date ASC
-        `, schoolId, classId);
+        `, Number(schoolId), JSON.stringify(Number(classId)));
             return {
                 status: 'success',
                 holidays,
@@ -35,6 +95,18 @@ let HolidaysService = class HolidaysService {
             console.error('🔥 Failed to fetch holidays:', error);
             throw new common_1.InternalServerErrorException('Database query failed');
         }
+    }
+    async deleteHoliday(dto) {
+        const result = await this.prisma.holidays.deleteMany({
+            where: {
+                date: new Date(dto.date),
+                school_id: dto.school_id,
+            },
+        });
+        if (result.count === 0) {
+            throw new common_1.NotFoundException('Holiday not found');
+        }
+        return { status: 'success', message: 'Holiday removed' };
     }
 };
 exports.HolidaysService = HolidaysService;

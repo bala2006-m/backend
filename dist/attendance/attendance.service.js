@@ -18,6 +18,21 @@ let AttendanceService = class AttendanceService {
     constructor(prisma) {
         this.prisma = prisma;
     }
+    async checkAttendanceExists(schoolId, classId, date) {
+        try {
+            const exists = await this.prisma.studentAttendance.findFirst({
+                where: {
+                    school_id: Number(schoolId),
+                    class_id: Number(classId),
+                    date: new Date(date),
+                },
+            });
+            return !!exists;
+        }
+        catch (error) {
+            throw new common_1.InternalServerErrorException('Database query failed');
+        }
+    }
     async fetchAttendanceByClassId(class_id, school_id, username) {
         return this.prisma.$queryRaw(client_1.Prisma.sql `
     SELECT date, fn_status, an_status
@@ -36,15 +51,35 @@ let AttendanceService = class AttendanceService {
         await this.prisma.$executeRawUnsafe(query, username, date, status, school_id, class_id);
         return { status: 'success', message: 'Student attendance recorded' };
     }
-    async getAttendanceByClassAndDate(class_id, date) {
+    async getStudentAttendance(date, schoolId) {
+        if (!schoolId)
+            return [];
+        const whereCondition = {
+            school_id: parseInt(schoolId),
+        };
+        if (date) {
+            whereCondition.date = new Date(date);
+        }
+        const records = await this.prisma.studentAttendance.findMany({
+            where: whereCondition,
+            select: {
+                username: true,
+                date: true,
+                fn_status: true,
+                an_status: true,
+            },
+        });
+        return records;
+    }
+    async getAttendanceByClassAndDate(class_id, date, school_id) {
         const results = await this.prisma.$queryRawUnsafe(`
       SELECT s.username, s.name, sa.fn_status, sa.an_status
       FROM student s
       LEFT JOIN studentAttendance sa
         ON s.username = sa.username AND sa.date = ?
-      WHERE s.class_id = ?
+      WHERE s.class_id = ? and s.school_id= ?
       ORDER BY s.name ASC
-    `, date, class_id);
+    `, date, class_id, school_id);
         return {
             status: 'success',
             count: results.length,
@@ -100,12 +135,11 @@ let AttendanceService = class AttendanceService {
     async markStaffAttendance(dto) {
         const { username, date, session, status, school_id } = dto;
         const column = session === 'FN' ? 'fn_status' : 'an_status';
-        const query = `
-    INSERT INTO staff_attendance (username, date, ${column}, school_id)
+        const result = await this.prisma.$executeRawUnsafe(`
+    INSERT INTO staffAttendance (username, date, ${column}, school_id)
     VALUES (?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE ${column} = VALUES(${column})
-  `;
-        await this.prisma.$executeRawUnsafe(query, username, date, status, school_id);
+    `, username, date, status, school_id);
         return { status: 'success', message: 'Staff attendance recorded' };
     }
     async getStaffDailySummary(username, date) {
@@ -150,6 +184,42 @@ let AttendanceService = class AttendanceService {
             year,
             records,
         };
+    }
+    async fetchAttendance(date, schoolId) {
+        let whereClause = {};
+        if (date && schoolId) {
+            whereClause = {
+                date: new Date(date),
+                school_id: Number(schoolId),
+            };
+        }
+        const attendance = await this.prisma.staffAttendance.findMany({
+            where: whereClause,
+            select: {
+                username: true,
+                date: true,
+                fn_status: true,
+                an_status: true,
+            },
+        });
+        return {
+            status: 'success',
+            staff: attendance,
+        };
+    }
+    async getAbsentees(date, schoolId, classId, sessionField) {
+        const absentees = await this.prisma.studentAttendance.findMany({
+            where: {
+                date,
+                school_id: schoolId,
+                class_id: classId,
+                [sessionField]: 'A',
+            },
+            select: {
+                username: true,
+            },
+        });
+        return absentees.map((a) => a.username);
     }
 };
 exports.AttendanceService = AttendanceService;

@@ -14,7 +14,7 @@ export class StaffService {
     });
   }
   async getProfileByUsername(username: string) {
-    console.log('Fetching profile for username:', username);
+
 
     if (!username) {
       throw new BadRequestException('Username is required');
@@ -90,6 +90,7 @@ async findByUsername(username: string) {
       select: {
         id: true,
         username: true,
+        designation: true,
         name: true,
         email: true,
         gender: true,
@@ -154,5 +155,19 @@ async changePassword(dto: ChangeStaffPasswordDto) {
 
   return { status: 'success', message: 'Password updated successfully' };
 }
+async countStaffBySchoolId(schoolId: number) {
+    const count = await this.prisma.staff.count({
+      where: {
+        school_id: schoolId,
+      },
+    });
+
+    return {
+      status: 'success',
+      count,
+    };
+  }
+
+
 }
 

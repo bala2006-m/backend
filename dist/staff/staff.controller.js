@@ -116,7 +116,8 @@ let StaffController = class StaffController {
         if (!schoolId) {
             return { status: 'error', message: 'Missing school_id' };
         }
-        return this.staffService.getAllBySchool(schoolId);
+        const id = parseInt(schoolId, 10);
+        return this.staffService.getAllBySchool(id);
     }
     async updateStaff(username, dto) {
         if (!username) {
@@ -132,6 +133,12 @@ let StaffController = class StaffController {
     }
     async changePassword(dto) {
         return this.staffService.changePassword(dto);
+    }
+    async countStaff(schoolId) {
+        if (!schoolId) {
+            throw new common_2.BadRequestException('Missing or empty school_id');
+        }
+        return this.staffService.countStaffBySchoolId(+schoolId);
     }
 };
 exports.StaffController = StaffController;
@@ -168,7 +175,7 @@ __decorate([
     (0, common_1.Get)('all-by-school'),
     __param(0, (0, common_1.Query)('school_id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], StaffController.prototype, "getAllBySchoolId", null);
 __decorate([
@@ -193,6 +200,13 @@ __decorate([
     __metadata("design:paramtypes", [change_password_dto_1.ChangeStaffPasswordDto]),
     __metadata("design:returntype", Promise)
 ], StaffController.prototype, "changePassword", null);
+__decorate([
+    (0, common_1.Get)('count'),
+    __param(0, (0, common_1.Query)('school_id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], StaffController.prototype, "countStaff", null);
 exports.StaffController = StaffController = __decorate([
     (0, common_1.Controller)('staff'),
     __metadata("design:paramtypes", [staff_service_1.StaffService])

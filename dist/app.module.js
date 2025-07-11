@@ -20,6 +20,9 @@ const class_timetable_module_1 = require("./timetable/class-timetable.module");
 const feedback_module_1 = require("./feedback/feedback.module");
 const schools_module_1 = require("./school/schools.module");
 const classes_module_1 = require("./class/classes.module");
+const admin_module_1 = require("./admin/admin.module");
+const auth_module_1 = require("./auth/auth.module");
+const attendance_user_module_1 = require("./attendance-user/attendance-user.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -36,6 +39,9 @@ exports.AppModule = AppModule = __decorate([
             feedback_module_1.FeedbackModule,
             schools_module_1.SchoolsModule,
             classes_module_1.ClassesModule,
+            admin_module_1.AdminModule,
+            auth_module_1.AuthModule,
+            attendance_user_module_1.AttendanceUserModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
