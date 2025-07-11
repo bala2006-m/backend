@@ -14,20 +14,16 @@ export class FeedbackService {
   }) {
     const { name, email, feedback, schoolId, classId } = data;
 
-    const query = `
-      INSERT INTO feedback (name, email, feedback, school_id, class_id)
-      VALUES (?, ?, ?, ?, ?)
-    `;
+    await this.prisma.feedback.create({
+      data: {
+        name,
+        email,
+        feedback,
+        school_id: schoolId,
+        class_id: classId,
+      },
+    });
 
-    await this.prisma.$executeRawUnsafe(
-      query,
-      name,
-      email,
-      feedback,
-      schoolId,
-      classId,
-    );
-
-    return { message: 'Feedback inserted using raw SQL' };
+    return { message: 'Feedback successfully submitted' };
   }
 }

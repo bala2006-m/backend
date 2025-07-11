@@ -81,7 +81,7 @@ let HolidaysService = class HolidaysService {
         try {
             const holidays = await this.prisma.$queryRawUnsafe(`
         SELECT DISTINCT date, reason, fn, an
-        FROM holidays
+        FROM Holidays
         WHERE school_id = ?
           AND JSON_CONTAINS(class_ids, ?, '$')
         ORDER BY date ASC

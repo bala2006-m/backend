@@ -15,15 +15,20 @@ export declare class AttendanceService {
         message: string;
     }>;
     getStudentAttendance(date?: string, schoolId?: string): Promise<{
-        date: Date;
         username: string;
+        date: Date;
         fn_status: string;
         an_status: string;
     }[]>;
     getAttendanceByClassAndDate(class_id: string, date: string, school_id: string): Promise<{
         status: string;
         count: number;
-        attendance: any[];
+        attendance: {
+            username: string;
+            name: string | null;
+            fn_status: string | null;
+            an_status: string | null;
+        }[];
     }>;
     getMonthlySummary(username: string, month: number, year: number): Promise<{
         status: string;
@@ -78,8 +83,8 @@ export declare class AttendanceService {
     fetchAttendance(date?: string, schoolId?: string): Promise<{
         status: string;
         staff: {
-            date: Date;
             username: string;
+            date: Date;
             fn_status: string;
             an_status: string;
         }[];

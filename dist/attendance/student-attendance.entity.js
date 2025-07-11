@@ -35,6 +35,6 @@ __decorate([
     __metadata("design:type", String)
 ], StudentAttendance.prototype, "date", void 0);
 exports.StudentAttendance = StudentAttendance = __decorate([
-    (0, typeorm_1.Entity)({ name: 'studentAttendance' })
+    (0, typeorm_1.Entity)({ name: 'StudentAttendance' })
 ], StudentAttendance);
 //# sourceMappingURL=student-attendance.entity.js.map

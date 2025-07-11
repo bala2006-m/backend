@@ -41,33 +41,49 @@ export class ClassTimetableService {
   }
 
   async getTimetable(schoolId: number, classesId: number) {
-    const rows: any[] = await this.prisma.$queryRawUnsafe(
-      `
-      SELECT dayOfWeek, periodNumber, subject
-      FROM ClassTimetable
-      WHERE schoolId = ? AND classesId = ?
-      ORDER BY
-        FIELD(dayOfWeek, 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'),
-        periodNumber ASC
-      `,
-      schoolId,
-      classesId,
-    );
+    const rows = await this.prisma.classTimetable.findMany({
+      where: {
+        schoolId,
+        classesId,
+      },
+      select: {
+        dayOfWeek: true,
+        periodNumber: true,
+        subject: true,
+      },
+      orderBy: {
+        periodNumber: 'asc',
+      },
+    });
+
+    const dayOrder = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
     const grouped: Record<string, any[]> = {};
+
     for (const row of rows) {
-      if (!grouped[row.dayOfWeek]) {
-        grouped[row.dayOfWeek] = [];
+      const day = row.dayOfWeek;
+      if (!grouped[day]) {
+        grouped[day] = [];
       }
-      grouped[row.dayOfWeek].push({
+
+      grouped[day].push({
         period: row.periodNumber,
         subject: row.subject,
         session: row.periodNumber <= 4 ? 'FN' : 'AN',
       });
     }
 
-    return grouped;
+    // Sort by custom day order
+    const sortedGrouped: Record<string, any[]> = {};
+    for (const day of dayOrder) {
+      if (grouped[day]) {
+        sortedGrouped[day] = grouped[day];
+      }
+    }
+
+    return sortedGrouped;
   }
+
 
   async findByClass(schoolId: number, classesId: number) {
     return this.prisma.classTimetable.findMany({

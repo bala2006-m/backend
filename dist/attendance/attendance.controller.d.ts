@@ -21,8 +21,8 @@ export declare class AttendanceController {
     fetchStudentAttendances(date?: string, schoolId?: string): Promise<{
         status: string;
         staff: {
-            date: Date;
             username: string;
+            date: Date;
             fn_status: string;
             an_status: string;
         }[];
@@ -43,7 +43,12 @@ export declare class AttendanceController {
     getAttendanceByClassAndDate(classId: string, date: string, schoolId: string): Promise<{
         status: string;
         count: number;
-        attendance: any[];
+        attendance: {
+            username: string;
+            name: string | null;
+            fn_status: string | null;
+            an_status: string | null;
+        }[];
     } | {
         status: string;
         message: string;
@@ -110,8 +115,8 @@ export declare class AttendanceController {
     fetchStaffAttendance(date?: string, schoolId?: string): Promise<{
         status: string;
         staff: {
-            date: Date;
             username: string;
+            date: Date;
             fn_status: string;
             an_status: string;
         }[];

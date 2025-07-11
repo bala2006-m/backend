@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AttendanceService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../common/prisma.service");
-const client_1 = require("@prisma/client");
 let AttendanceService = class AttendanceService {
     prisma;
     constructor(prisma) {
@@ -34,21 +33,55 @@ let AttendanceService = class AttendanceService {
         }
     }
     async fetchAttendanceByClassId(class_id, school_id, username) {
-        return this.prisma.$queryRaw(client_1.Prisma.sql `
-    SELECT date, fn_status, an_status
-    FROM studentAttendance
-    WHERE class_id = ${class_id} AND school_id = ${school_id} AND username = ${username}
-  `);
+        return this.prisma.studentAttendance.findMany({
+            where: {
+                class_id: Number(class_id),
+                school_id: Number(school_id),
+                username,
+            },
+            select: {
+                date: true,
+                fn_status: true,
+                an_status: true,
+            },
+            orderBy: { date: 'asc' },
+        });
     }
     async markStudentAttendance(dto) {
         const { username, date, session, status, school_id, class_id } = dto;
         const column = session === 'FN' ? 'fn_status' : 'an_status';
-        const query = `
-   INSERT INTO studentAttendance(username, date, ${column}, school_id, class_id)
-   VALUES (?, ?, ?, ?, ?)
-   ON DUPLICATE KEY UPDATE ${column} = VALUES(${column})
- `;
-        await this.prisma.$executeRawUnsafe(query, username, date, status, school_id, class_id);
+        const existing = await this.prisma.studentAttendance.findUnique({
+            where: {
+                username_date: {
+                    username,
+                    date: new Date(date),
+                },
+            },
+        });
+        if (existing) {
+            await this.prisma.studentAttendance.update({
+                where: {
+                    username_date: {
+                        username,
+                        date: new Date(date),
+                    },
+                },
+                data: {
+                    [column]: status,
+                },
+            });
+        }
+        else {
+            await this.prisma.studentAttendance.create({
+                data: {
+                    username,
+                    date: new Date(date),
+                    [column]: status,
+                    school_id: Number(school_id),
+                    class_id: Number(class_id),
+                },
+            });
+        }
         return { status: 'success', message: 'Student attendance recorded' };
     }
     async getStudentAttendance(date, schoolId) {
@@ -60,7 +93,7 @@ let AttendanceService = class AttendanceService {
         if (date) {
             whereCondition.date = new Date(date);
         }
-        const records = await this.prisma.studentAttendance.findMany({
+        return this.prisma.studentAttendance.findMany({
             where: whereCondition,
             select: {
                 username: true,
@@ -69,21 +102,39 @@ let AttendanceService = class AttendanceService {
                 an_status: true,
             },
         });
-        return records;
     }
     async getAttendanceByClassAndDate(class_id, date, school_id) {
-        const results = await this.prisma.$queryRawUnsafe(`
-      SELECT s.username, s.name, sa.fn_status, sa.an_status
-      FROM student s
-      LEFT JOIN studentAttendance sa
-        ON s.username = sa.username AND sa.date = ?
-      WHERE s.class_id = ? and s.school_id= ?
-      ORDER BY s.name ASC
-    `, date, class_id, school_id);
+        const students = await this.prisma.student.findMany({
+            where: {
+                class_id: Number(class_id),
+                school_id: Number(school_id),
+            },
+            select: {
+                username: true,
+                name: true,
+            },
+            orderBy: { name: 'asc' },
+        });
+        const attendanceRecords = await this.prisma.studentAttendance.findMany({
+            where: {
+                class_id: Number(class_id),
+                school_id: Number(school_id),
+                date: new Date(date),
+            },
+        });
+        const attendance = students.map((student) => {
+            const record = attendanceRecords.find((att) => att.username === student.username);
+            return {
+                username: student.username,
+                name: student.name,
+                fn_status: record?.fn_status ?? null,
+                an_status: record?.an_status ?? null,
+            };
+        });
         return {
             status: 'success',
-            count: results.length,
-            attendance: results,
+            count: attendance.length,
+            attendance,
         };
     }
     async getMonthlySummary(username, month, year) {
@@ -135,11 +186,37 @@ let AttendanceService = class AttendanceService {
     async markStaffAttendance(dto) {
         const { username, date, session, status, school_id } = dto;
         const column = session === 'FN' ? 'fn_status' : 'an_status';
-        const result = await this.prisma.$executeRawUnsafe(`
-    INSERT INTO staffAttendance (username, date, ${column}, school_id)
-    VALUES (?, ?, ?, ?)
-    ON DUPLICATE KEY UPDATE ${column} = VALUES(${column})
-    `, username, date, status, school_id);
+        const existing = await this.prisma.staffAttendance.findUnique({
+            where: {
+                username_date: {
+                    username,
+                    date: new Date(date),
+                },
+            },
+        });
+        if (existing) {
+            await this.prisma.staffAttendance.update({
+                where: {
+                    username_date: {
+                        username,
+                        date: new Date(date),
+                    },
+                },
+                data: {
+                    [column]: status,
+                },
+            });
+        }
+        else {
+            await this.prisma.staffAttendance.create({
+                data: {
+                    username,
+                    date: new Date(date),
+                    [column]: status,
+                    school_id: Number(school_id),
+                },
+            });
+        }
         return { status: 'success', message: 'Staff attendance recorded' };
     }
     async getStaffDailySummary(username, date) {
@@ -168,7 +245,10 @@ let AttendanceService = class AttendanceService {
         const records = await this.prisma.staffAttendance.findMany({
             where: {
                 username,
-                date: { gte: from, lte: to },
+                date: {
+                    gte: from,
+                    lte: to,
+                },
             },
             select: {
                 date: true,
@@ -186,13 +266,11 @@ let AttendanceService = class AttendanceService {
         };
     }
     async fetchAttendance(date, schoolId) {
-        let whereClause = {};
-        if (date && schoolId) {
-            whereClause = {
-                date: new Date(date),
-                school_id: Number(schoolId),
-            };
-        }
+        const whereClause = {};
+        if (date)
+            whereClause.date = new Date(date);
+        if (schoolId)
+            whereClause.school_id = Number(schoolId);
         const attendance = await this.prisma.staffAttendance.findMany({
             where: whereClause,
             select: {
