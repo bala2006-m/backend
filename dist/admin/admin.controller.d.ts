@@ -9,8 +9,8 @@ export declare class AdminController {
             photo: string | null;
             school_id: number;
             name: string | null;
-            designation: string;
             mobile: string;
+            designation: string;
         }[];
         message?: undefined;
     } | {

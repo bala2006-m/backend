@@ -21,8 +21,8 @@ export declare class AttendanceController {
     fetchStudentAttendances(date?: string, schoolId?: string): Promise<{
         status: string;
         staff: {
-            username: string;
             date: Date;
+            username: string;
             fn_status: string;
             an_status: string;
         }[];
@@ -115,8 +115,8 @@ export declare class AttendanceController {
     fetchStaffAttendance(date?: string, schoolId?: string): Promise<{
         status: string;
         staff: {
-            username: string;
             date: Date;
+            username: string;
             fn_status: string;
             an_status: string;
         }[];

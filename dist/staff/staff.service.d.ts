@@ -10,28 +10,28 @@ export declare class StaffService {
         id: number;
         name: string | null;
         username: string;
-        designation: string;
-        email: string;
         gender: import(".prisma/client").$Enums.Gender | null;
+        email: string;
         mobile: string;
         password: string;
+        designation: string;
     }>;
     getProfileByUsername(username: string): Promise<{
         school_id: number;
         id: number;
         name: string | null;
         username: string;
-        designation: string;
-        email: string;
         gender: import(".prisma/client").$Enums.Gender | null;
+        email: string;
         mobile: string;
+        designation: string;
     } | null>;
     findByUsername(username: string): Promise<{
         school_id: number;
         name: string | null;
-        designation: string;
         gender: import(".prisma/client").$Enums.Gender | null;
         mobile: string;
+        designation: string;
     } | null>;
     register(dto: RegisterStaffDto): Promise<{
         status: string;
@@ -44,11 +44,11 @@ export declare class StaffService {
             id: number;
             name: string | null;
             username: string;
-            designation: string;
-            email: string;
             gender: import(".prisma/client").$Enums.Gender | null;
+            email: string;
             mobile: string;
             password: string;
+            designation: string;
         };
         message?: undefined;
     }>;
@@ -59,10 +59,10 @@ export declare class StaffService {
             id: number;
             name: string | null;
             username: string;
-            designation: string;
-            email: string;
             gender: import(".prisma/client").$Enums.Gender | null;
+            email: string;
             mobile: string;
+            designation: string;
         }[];
     }>;
     updateStaff(username: string, dto: UpdateStaffDto): Promise<{
@@ -76,11 +76,11 @@ export declare class StaffService {
             id: number;
             name: string | null;
             username: string;
-            designation: string;
-            email: string;
             gender: import(".prisma/client").$Enums.Gender | null;
+            email: string;
             mobile: string;
             password: string;
+            designation: string;
         };
         message?: undefined;
     }>;

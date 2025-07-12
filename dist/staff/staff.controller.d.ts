@@ -12,11 +12,11 @@ export declare class StaffController {
             id: number;
             name: string | null;
             username: string;
-            designation: string;
-            email: string;
             gender: import(".prisma/client").$Enums.Gender | null;
+            email: string;
             mobile: string;
             password: string;
+            designation: string;
         };
     }>;
     getProfileByUsername1(username: string): Promise<{
@@ -71,11 +71,11 @@ export declare class StaffController {
             id: number;
             name: string | null;
             username: string;
-            designation: string;
-            email: string;
             gender: import(".prisma/client").$Enums.Gender | null;
+            email: string;
             mobile: string;
             password: string;
+            designation: string;
         };
         message?: undefined;
     }>;
@@ -86,10 +86,10 @@ export declare class StaffController {
             id: number;
             name: string | null;
             username: string;
-            designation: string;
-            email: string;
             gender: import(".prisma/client").$Enums.Gender | null;
+            email: string;
             mobile: string;
+            designation: string;
         }[];
     } | {
         status: string;
@@ -102,11 +102,11 @@ export declare class StaffController {
             id: number;
             name: string | null;
             username: string;
-            designation: string;
-            email: string;
             gender: import(".prisma/client").$Enums.Gender | null;
+            email: string;
             mobile: string;
             password: string;
+            designation: string;
         };
         message?: undefined;
     } | {

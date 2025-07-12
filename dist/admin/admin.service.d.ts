@@ -7,8 +7,8 @@ export declare class AdminService {
         photo: string | null;
         school_id: number;
         name: string | null;
-        designation: string;
         mobile: string;
+        designation: string;
     }[]>;
     updateAdmin(username: string, data: UpdateAdminDto): Promise<{
         message: string;

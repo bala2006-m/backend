@@ -15,8 +15,8 @@ export declare class AttendanceService {
         message: string;
     }>;
     getStudentAttendance(date?: string, schoolId?: string): Promise<{
-        username: string;
         date: Date;
+        username: string;
         fn_status: string;
         an_status: string;
     }[]>;
@@ -83,8 +83,8 @@ export declare class AttendanceService {
     fetchAttendance(date?: string, schoolId?: string): Promise<{
         status: string;
         staff: {
-            username: string;
             date: Date;
+            username: string;
             fn_status: string;
             an_status: string;
         }[];

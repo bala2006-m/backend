@@ -8,13 +8,13 @@ export declare class HolidaysController {
     addHoliday(dto: CreateHolidayDto): Promise<{
         status: string;
         holiday: {
-            id: number;
             date: Date;
-            reason: string;
             school_id: number | null;
+            reason: string;
             class_ids: import("@prisma/client/runtime/library").JsonValue;
             fn: string | null;
             an: string;
+            id: number;
         };
     }>;
     getByClass(query: GetHolidaysByClassDto): Promise<{
@@ -29,16 +29,16 @@ export declare class HolidaysController {
     fetchHolidays(school_id: string): Promise<{
         status: string;
         holidays: {
-            date: Date;
-            reason: string;
-            class_ids: import("@prisma/client/runtime/library").JsonValue;
-            fn: string | null;
-            an: string;
             classes: {
                 id: number;
                 class: string;
                 section: string;
             }[];
+            date: Date;
+            reason: string;
+            class_ids: import("@prisma/client/runtime/library").JsonValue;
+            fn: string | null;
+            an: string;
         }[];
     }>;
     deleteHoliday(dto: DeleteHolidayDto): Promise<{

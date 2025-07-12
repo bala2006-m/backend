@@ -14,8 +14,8 @@ export declare class StudentsService {
             school_id: number;
             name: string | null;
             class_id: number;
-            email: string;
             gender: import(".prisma/client").$Enums.Gender | null;
+            email: string;
             mobile: string;
             photo: Uint8Array<ArrayBufferLike> | null;
         };
@@ -37,11 +37,11 @@ export declare class StudentsService {
             name: string | null;
             class_id: number;
             username: string;
-            email: string;
             gender: import(".prisma/client").$Enums.Gender | null;
+            email: string;
             mobile: string;
-            password: string;
             photo: Uint8Array | null;
+            password: string;
         };
         message?: undefined;
     }>;
@@ -60,8 +60,8 @@ export declare class StudentsService {
             id: number;
             name: string | null;
             username: string;
-            email: string;
             gender: import(".prisma/client").$Enums.Gender | null;
+            email: string;
             mobile: string;
         }[];
     }>;
@@ -72,8 +72,8 @@ export declare class StudentsService {
             id: number;
             name: string | null;
             username: string;
-            email: string;
             gender: import(".prisma/client").$Enums.Gender | null;
+            email: string;
             mobile: string;
         }[];
     }>;
@@ -83,8 +83,8 @@ export declare class StudentsService {
         students: {
             name: string | null;
             username: string;
-            email: string;
             gender: import(".prisma/client").$Enums.Gender | null;
+            email: string;
             mobile: string;
         }[];
         message?: undefined;
@@ -97,8 +97,8 @@ export declare class StudentsService {
     }>;
     findStudentByUsernameClassSchool(username: string, classId: number, schoolId: number): Promise<{
         name: string | null;
-        email: string;
         gender: import(".prisma/client").$Enums.Gender | null;
+        email: string;
         mobile: string;
     } | null>;
 }
