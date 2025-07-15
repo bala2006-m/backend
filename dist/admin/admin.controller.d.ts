@@ -5,13 +5,7 @@ export declare class AdminController {
     constructor(adminService: AdminService);
     fetchAdminData(username?: string): Promise<{
         status: string;
-        data: {
-            photo: string | null;
-            school_id: number;
-            name: string | null;
-            mobile: string;
-            designation: string;
-        }[];
+        data: any[];
         message?: undefined;
     } | {
         status: string;
