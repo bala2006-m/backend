@@ -19,7 +19,7 @@ let AdminService = class AdminService {
     }
     async getAdmin(username) {
         if (username) {
-            const admin = await this.prisma.Admin.findUnique({
+            const admin = await this.prisma.admin.findUnique({
                 where: { username },
                 select: {
                     name: true,
